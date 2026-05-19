@@ -12,11 +12,11 @@
   body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; background: #f5f5f0; color: #1a1a1a; font-size: 15px; }
 
   /* ===== ナビゲーション ===== */
-  header { background: #e60000; color: white; padding: 14px 20px; position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  header { background: #FF0015; color: white; padding: 14px 20px; position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: center; gap: 10px; }
   header h1 { font-size: 17px; font-weight: 600; }
   .header-icon { height: 48px; width: 48px; border-radius: 10px; object-fit: cover; }
-  .nav-tabs { display: flex; background: white; border-top: 1px solid #e0e0e0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 199; }
-  .nav-tab { flex: 1; padding: 11px 4px 13px; font-size: 12px; font-weight: 600; color: #888; border: none; background: none; cursor: pointer; border-top: 3px solid transparent; text-align: center; }
+  .nav-tabs { display: flex; background: white; border-top: 1px solid #e0e0e0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 199; padding-bottom: env(safe-area-inset-bottom); }
+  .nav-tab { flex: 1; padding: 16px 4px 18px; font-size: 12px; font-weight: 600; color: #888; border: none; background: none; cursor: pointer; border-top: 3px solid transparent; text-align: center; }
   .nav-tab.active { color: #c0392b; border-top-color: #c0392b; }
 
   /* ===== ページ ===== */
