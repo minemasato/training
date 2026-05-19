@@ -630,6 +630,8 @@
     <div class="history-header">
       <h2>トレーニング履歴</h2>
       <button class="csv-btn" onclick="exportCSV()">📥 CSVを出力</button>
+      <button class="csv-btn" style="background:#e67e22;" onclick="document.getElementById('csv-import-input').click()">📤 CSVを読込</button>
+      <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(this)">
     </div>
     <div id="history-list"></div>
   </div>
@@ -1225,6 +1227,86 @@ function exportCSV() {
   a.download = `training_${today}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ===== CSVインポート =====
+function importCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const text = e.target.result.replace(/^﻿/, '');
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      const headers = parseCSVLine(lines[0]);
+      const dateIdx = headers.indexOf('日付');
+      const patIdx = headers.indexOf('パターン');
+      const nameIdx = headers.indexOf('種目名');
+      const noteIdx = headers.indexOf('メモ');
+      if (dateIdx < 0 || nameIdx < 0) { alert('CSVの形式が正しくありません'); return; }
+
+      const dayMap = {};
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        if (cols.length < 3) continue;
+        const date = cols[dateIdx];
+        const pattern = patIdx >= 0 ? cols[patIdx] : '';
+        const name = cols[nameIdx];
+        const note = noteIdx >= 0 ? (cols[noteIdx] || '') : '';
+        const sets = [];
+        for (let s = 1; s <= 4; s++) {
+          const kgIdx = headers.indexOf(`セット${s}(kg)`);
+          const repIdx = headers.indexOf(`セット${s}(reps)`);
+          if (kgIdx >= 0 && repIdx >= 0) {
+            const w = parseFloat(cols[kgIdx]);
+            const r = parseInt(cols[repIdx]);
+            if (!isNaN(w) && !isNaN(r) && w > 0 && r > 0) sets.push({ weight: w, reps: r });
+          }
+        }
+        if (!name || sets.length === 0) continue;
+        if (!dayMap[date]) dayMap[date] = { date, pattern, exercises: [], note };
+        dayMap[date].exercises.push({ name, sets });
+        if (note) dayMap[date].note = note;
+      }
+
+      const imported = Object.values(dayMap);
+      if (imported.length === 0) { alert('インポートできるデータがありません'); return; }
+
+      const existing = getRecords();
+      let added = 0, skipped = 0;
+      imported.forEach(imp => {
+        const idx = existing.findIndex(r => r.date === imp.date);
+        if (idx >= 0) { skipped++; }
+        else { existing.push(imp); added++; }
+      });
+      existing.sort((a, b) => b.date.localeCompare(a.date));
+      saveRecords(existing);
+      input.value = '';
+      alert(`インポート完了\n追加: ${added}件 / スキップ(重複): ${skipped}件`);
+      renderHistory();
+    } catch(err) {
+      alert('読み込みエラー: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parseCSVLine(line) {
+  const cols = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      cols.push(cur); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  cols.push(cur);
+  return cols;
 }
 
 // ===== 初期化 =====
