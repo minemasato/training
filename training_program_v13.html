@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>トレーニングプログラム</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; background: #f5f5f0; color: #1a1a1a; font-size: 15px; }
+
+  /* ===== ナビゲーション ===== */
+  header { background: #c0392b; color: white; padding: 14px 20px; position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 17px; font-weight: 600; }
+  .nav-tabs { display: flex; background: white; border-top: 1px solid #e0e0e0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 199; }
+  .nav-tab { flex: 1; padding: 11px 4px 13px; font-size: 12px; font-weight: 600; color: #888; border: none; background: none; cursor: pointer; border-top: 3px solid transparent; text-align: center; }
+  .nav-tab.active { color: #c0392b; border-top-color: #c0392b; }
+
+  /* ===== ページ ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== プログラムページ ===== */
+  .pattern-bar { display: flex; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 49px; z-index: 198; }
+  .pat-btn { flex: 1; padding: 10px 4px; font-size: 13px; font-weight: 600; color: #888; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; }
+  .pat-btn.active { color: #c0392b; border-bottom-color: #c0392b; }
+
+  .program-content { display: none; padding: 12px 16px 80px; max-width: 600px; margin: 0 auto; }
+  .program-content.active { display: block; }
+
+  .pattern-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .pattern-desc { font-size: 13px; color: #666; }
+  .time-badge { font-size: 12px; background: #f0f0f0; color: #555; padding: 3px 10px; border-radius: 20px; }
+  .section-title { font-size: 11px; font-weight: 700; color: #aaa; letter-spacing: 0.1em; margin: 16px 0 8px; }
+
+  /* 種目カード */
+  .card { background: white; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); overflow: hidden; transition: opacity 0.2s; }
+  .card.done { opacity: 0.5; }
+  .card-top { padding: 12px 14px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+  .card-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .badge-chest { background: #dbeafe; color: #1d4ed8; }
+  .badge-back  { background: #d1fae5; color: #065f46; }
+  .badge-leg   { background: #fef3c7; color: #92400e; }
+  .badge-shoulder { background: #fce7f3; color: #9d174d; }
+
+  .set-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .set-table th { background: #fafafa; color: #aaa; font-weight: 500; font-size: 11px; padding: 5px 8px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+  .set-table td { padding: 7px 8px; border-bottom: 1px solid #f7f7f7; vertical-align: middle; color: #333; }
+  .set-table tr:last-child td { border-bottom: none; }
+  .row-warm td { color: #aaa; }
+  .row-main { cursor: pointer; }
+  .row-main.set-done td { color: #1D9E75; text-decoration: line-through; text-decoration-color: #a7f3d0; }
+  .row-main.set-done .tag-main { background: #d1fae5; color: #065f46; }
+  .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 6px; }
+  .tag-warm { background: #f0f0f0; color: #888; }
+  .tag-main { background: #fee2e2; color: #b91c1c; }
+  .rest-note { font-size: 11px; color: #aaa; padding: 7px 14px 2px; }
+
+  /* 完了チェック */
+  .card-check-row { display: flex; align-items: center; gap: 10px; padding: 8px 14px 12px; cursor: pointer; }
+  .exercise-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .exercise-check.checked { background: #1D9E75; border-color: #1D9E75; }
+  .exercise-check.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+  .check-label { font-size: 12px; color: #aaa; }
+  .check-label.checked { color: #1D9E75; font-weight: 500; }
+
+  /* 代替 */
+  .alt-toggle { width: 100%; background: #f8faff; border: none; border-top: 1px solid #e8f0fe; padding: 9px 14px; font-size: 12px; color: #4b7bec; font-weight: 500; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
+  .alt-toggle::after { content: '▼'; font-size: 10px; transition: transform 0.2s; }
+  .alt-toggle.open::after { transform: rotate(-180deg); }
+  .alt-body { display: none; background: #f0f7ff; padding: 10px 14px; border-top: 1px solid #dbeafe; }
+  .alt-body.open { display: block; }
+  .alt-name { font-size: 13px; font-weight: 600; color: #1e3a5f; margin-bottom: 7px; }
+  .alt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .alt-cell { background: white; border-radius: 6px; padding: 5px 8px; }
+  .alt-cell-label { font-size: 10px; color: #9ca3af; margin-bottom: 2px; }
+  .alt-cell-value { font-size: 12px; font-weight: 600; color: #1e3a5f; }
+  .alt-note-text { font-size: 11px; color: #6b7280; margin-top: 7px; line-height: 1.5; }
+
+  /* ルール */
+  .rules-section { margin-top: 20px; border-top: 1px solid #e8e8e8; padding-top: 14px; }
+  .rules-toggle { width: 100%; background: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #666; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
+  .rules-toggle::after { content: '▼'; font-size: 10px; color: #aaa; transition: transform 0.2s; }
+  .rules-toggle.open::after { transform: rotate(-180deg); }
+  .rules-body { display: none; margin-top: 10px; }
+  .rules-body.open { display: block; }
+  .rule-card { background: white; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .rule-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  .rule-body-text { font-size: 12px; color: #555; line-height: 1.8; }
+  .highlight { background: #fff3f3; border-radius: 4px; padding: 1px 5px; color: #c0392b; font-weight: 600; }
+  .schedule-row { display: flex; border-radius: 8px; overflow: hidden; border: 1px solid #eee; margin: 8px 0; }
+  .day-cell { flex: 1; text-align: center; padding: 7px 2px; }
+  .day-label { font-size: 10px; color: #999; margin-bottom: 2px; }
+  .day-content { font-weight: 700; font-size: 12px; }
+  .day-a { background: #fef3c7; color: #92400e; }
+  .day-b { background: #dbeafe; color: #1d4ed8; }
+  .day-c { background: #d1fae5; color: #065f46; }
+  .day-rest { background: #f8f8f8; color: #ccc; }
+  .step-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
+  .step-row:last-child { border-bottom: none; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: #fee2e2; color: #c0392b; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { color: #444; line-height: 1.6; }
+  .tip { background: #fff8e1; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 12px; color: #555; line-height: 1.7; margin-top: 8px; }
+  .caution { background: #fff1f1; border-left: 3px solid #c0392b; border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 12px; color: #555; line-height: 1.7; margin-top: 8px; }
+  .reset-btn { width: 100%; margin-top: 18px; padding: 11px; background: none; border: 1px dashed #ddd; border-radius: 10px; font-size: 13px; color: #bbb; cursor: pointer; }
+
+  /* ===== 記録ページ ===== */
+  .record-page { padding: 14px 16px 80px; max-width: 600px; margin: 0 auto; }
+  .record-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .record-header h2 { font-size: 16px; font-weight: 600; }
+  .date-select { font-size: 13px; border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px; background: white; color: #333; }
+  .save-btn { background: #c0392b; color: white; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .save-btn:active { background: #a93226; }
+
+  .record-section { margin-bottom: 16px; }
+  .record-section-title { font-size: 11px; font-weight: 700; color: #aaa; letter-spacing: 0.1em; margin-bottom: 8px; }
+
+  .record-exercise { background: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .record-ex-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #1a1a1a; }
+  .record-sets { display: flex; flex-direction: column; gap: 6px; }
+  .record-set-row { display: flex; align-items: center; gap: 8px; }
+  .set-num-label { font-size: 12px; color: #aaa; flex: 0 0 40px; }
+  .record-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 14px; text-align: center; width: 72px; background: #fafafa; color: #1a1a1a; -webkit-appearance: none; }
+  .record-input:focus { outline: none; border-color: #c0392b; background: white; }
+  .record-unit { font-size: 12px; color: #999; }
+  .add-set-btn { background: none; border: 1px dashed #ddd; border-radius: 8px; padding: 6px; font-size: 12px; color: #bbb; cursor: pointer; margin-top: 4px; width: 100%; }
+  .remove-set-btn { background: none; border: none; color: #ddd; font-size: 16px; cursor: pointer; padding: 0 4px; flex-shrink: 0; }
+
+  .pattern-select-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .pattern-select-btn { flex: 1; padding: 8px 4px; font-size: 13px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
+  .pattern-select-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
+
+  .note-area { width: 100%; border: 1px solid #e5e5e5; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: #333; background: white; resize: none; height: 70px; font-family: inherit; }
+  .note-area:focus { outline: none; border-color: #c0392b; }
+
+  /* ===== 履歴ページ ===== */
+  .history-page { padding: 14px 16px 80px; max-width: 600px; margin: 0 auto; }
+  .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .history-header h2 { font-size: 16px; font-weight: 600; }
+  .history-empty { text-align: center; padding: 60px 20px; color: #bbb; font-size: 14px; }
+  .history-item { background: white; border-radius: 12px; padding: 13px 14px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .history-summary { cursor: pointer; }
+  .history-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .history-date { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .history-pattern { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+  .pat-a { background: #fef3c7; color: #92400e; }
+  .pat-b { background: #dbeafe; color: #1d4ed8; }
+  .pat-c { background: #d1fae5; color: #065f46; }
+  .history-exercises { font-size: 12px; color: #888; line-height: 1.6; }
+  .history-detail { display: none; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
+  .history-detail.open { display: block; }
+  .detail-ex { margin-bottom: 8px; }
+  .detail-ex-name { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; }
+  .detail-sets { font-size: 12px; color: #666; line-height: 1.8; }
+  .detail-note { font-size: 12px; color: #888; margin-top: 6px; padding-top: 6px; border-top: 1px solid #f5f5f5; }
+  .delete-log-btn { background: none; border: none; color: #ddd; font-size: 12px; cursor: pointer; margin-top: 8px; }
+  .edit-log-btn { background: none; border: none; color: #999; font-size: 12px; cursor: pointer; margin-top: 8px; margin-left: 8px; }
+  .history-edit-form { margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
+  .edit-date-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .edit-date-label { font-size: 12px; color: #666; flex-shrink: 0; }
+  .edit-date-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 6px 10px; font-size: 13px; background: #fafafa; color: #1a1a1a; }
+  .edit-pat-row { display: flex; gap: 6px; margin-bottom: 10px; }
+  .edit-pat-btn { flex: 1; padding: 6px 4px; font-size: 12px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
+  .edit-pat-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
+  .edit-ex-block { background: #fafafa; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid #eee; }
+  .edit-ex-name { width: 100%; border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 13px; background: white; color: #1a1a1a; font-family: inherit; margin-bottom: 8px; }
+  .edit-set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .edit-set-label { font-size: 11px; color: #aaa; flex: 0 0 38px; }
+  .edit-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 6px 8px; font-size: 13px; text-align: center; width: 68px; background: white; color: #1a1a1a; -webkit-appearance: none; }
+  .edit-unit { font-size: 11px; color: #999; }
+  .edit-remove-set-btn { background: none; border: none; color: #ddd; font-size: 15px; cursor: pointer; padding: 0 2px; flex-shrink: 0; }
+  .edit-note { width: 100%; border: 1px solid #e5e5e5; border-radius: 8px; padding: 8px 10px; font-size: 12px; color: #333; background: white; resize: none; height: 60px; font-family: inherit; margin-top: 4px; }
+  .edit-add-set-btn { background: none; border: 1px dashed #ddd; border-radius: 6px; padding: 5px; font-size: 11px; color: #bbb; cursor: pointer; width: 100%; margin-top: 4px; }
+  .edit-add-ex-btn { width: 100%; padding: 9px; background: none; border: 1.5px dashed #c0392b; border-radius: 8px; font-size: 12px; color: #c0392b; cursor: pointer; font-weight: 500; margin-bottom: 10px; }
+  .edit-save-btn { background: #c0392b; color: white; border: none; border-radius: 8px; padding: 9px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; }
+  .edit-cancel-btn { background: none; border: 1px solid #ddd; border-radius: 8px; padding: 9px; font-size: 13px; color: #888; cursor: pointer; width: 100%; margin-top: 6px; }
+
+  /* ===== 分析ページ ===== */
+  .analysis-page { padding: 14px 16px 80px; max-width: 600px; margin: 0 auto; }
+  .analysis-header { margin-bottom: 16px; }
+  .analysis-header h2 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .analysis-header p { font-size: 12px; color: #999; }
+
+  .analysis-empty { text-align: center; padding: 60px 20px; color: #bbb; font-size: 14px; }
+
+  .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .metric-card { background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .metric-label { font-size: 11px; color: #aaa; margin-bottom: 4px; }
+  .metric-value { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+  .metric-sub { font-size: 11px; color: #999; margin-top: 2px; }
+
+  .analysis-section { background: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .analysis-section-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; }
+
+  .ex-progress-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f5f5f5; }
+  .ex-progress-row:last-child { border-bottom: none; }
+  .ex-progress-name { font-size: 13px; color: #333; flex: 0 0 120px; }
+  .ex-progress-bar-wrap { flex: 1; background: #f0f0f0; border-radius: 4px; height: 6px; overflow: hidden; }
+  .ex-progress-bar { height: 100%; border-radius: 4px; background: #1D9E75; }
+  .ex-progress-val { font-size: 12px; color: #555; flex: 0 0 60px; text-align: right; font-weight: 500; }
+
+  .freq-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .freq-label { font-size: 12px; color: #666; flex: 0 0 80px; }
+  .freq-dots { display: flex; gap: 4px; flex-wrap: wrap; }
+  .freq-dot { width: 10px; height: 10px; border-radius: 50%; background: #c0392b; }
+  .freq-dot.rest { background: #e8e8e8; }
+
+  /* CSV出力ボタン */
+  .csv-btn { background: #1D9E75; color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .csv-btn:active { background: #178a64; }
+  .csv-disabled { background: #ccc; cursor: not-allowed; }
+
+  /* 種目追加ボタン */
+  .add-exercise-btn { width: 100%; margin: 4px 0 14px; padding: 11px; background: none; border: 1.5px dashed #c0392b; border-radius: 10px; font-size: 13px; color: #c0392b; cursor: pointer; font-weight: 500; }
+
+  /* 種目ブロックヘッダー */
+  .record-ex-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .record-ex-select { flex: 1; border: 1px solid #e5e5e5; border-radius: 8px; padding: 8px 10px; font-size: 14px; background: #fafafa; color: #1a1a1a; font-family: inherit; -webkit-appearance: none; }
+  .record-ex-select:focus { outline: none; border-color: #c0392b; background: white; }
+  .remove-ex-btn { background: none; border: none; color: #ddd; font-size: 20px; cursor: pointer; flex-shrink: 0; padding: 0 4px; line-height: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💪 トレーニング</h1>
+</header>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showPage('program', this)">プログラム</button>
+  <button class="nav-tab" onclick="showPage('record', this)">記録する</button>
+  <button class="nav-tab" onclick="showPage('history', this); renderHistory()">履歴</button>
+  <button class="nav-tab" onclick="showPage('analysis', this); renderAnalysis()">分析</button>
+</div>
+
+<!-- ===== プログラムページ ===== -->
+<div id="page-program" class="page active">
+  <div class="pattern-bar">
+    <button class="pat-btn active" onclick="showPattern('smith', this)">A｜スミスマシン</button>
+    <button class="pat-btn" onclick="showPattern('dumbbell', this)">B｜ダンベル</button>
+    <button class="pat-btn" onclick="showPattern('machine', this)">C｜マシン</button>
+  </div>
+
+  <!-- パターンA -->
+  <div id="pat-smith" class="program-content active">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">下半身・背中メインの日</span><span class="time-badge">55〜65分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">スミスマシン スクワット</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>37〜42kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>37〜42kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>37〜42kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ブルガリアンスクワット（ダンベル）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">3kg × 10</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">7kg（片手）</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3（片側）</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">デッドリフト（バーベル）</span><span class="badge badge-back">背中・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ①</span></td></tr>
+          <tr class="row-warm"><td>2</td><td>30kg</td><td>5reps</td><td><span class="tag tag-warm">ウォームアップ②</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>37kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>37kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>37kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 2〜3分　腰の状態が悪い日はスクワットのみでOK</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ダンベルデッドリフト</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">4kg × 10</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">7〜8kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">12〜15reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">補助種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ラットプルダウン</span><span class="badge badge-back">広背筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">サイドレイズ</span><span class="badge badge-shoulder">肩</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1分　6kg×10→12reps安定→7kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：時間が足りない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ショルダープレスマシン</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">10kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">20〜25kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    <div class="rules-section">
+      <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール・スケジュール</button>
+      <div class="rules-body">
+        <div style="height:8px;"></div>
+        <div class="rule-card"><p class="rule-title">重量の上げ方</p><p class="rule-body-text">メイン3セット全て規定レップ数・きれいなフォームでクリア → 次回<span class="highlight">+2.5kg</span><br>1セットでも未達成なら同じ重量を継続</p></div>
+        <div class="rule-card"><p class="rule-title">週のスケジュール</p><p class="rule-body-text">同じパターンの連続はNG。同じ部位に<span class="highlight">中2〜3日</span>空けること。</p>
+          <p style="font-size:11px;color:#aaa;margin:10px 0 5px;">週2回の例（月・木）</p>
+          <div class="schedule-row"><div class="day-cell day-a"><div class="day-label">月</div><div class="day-content">A</div></div><div class="day-cell day-rest"><div class="day-label">火</div><div class="day-content">休</div></div><div class="day-cell day-rest"><div class="day-label">水</div><div class="day-content">休</div></div><div class="day-cell day-b"><div class="day-label">木</div><div class="day-content">B</div></div><div class="day-cell day-rest"><div class="day-label">金</div><div class="day-content">休</div></div><div class="day-cell day-rest"><div class="day-label">土</div><div class="day-content">休</div></div><div class="day-cell day-rest"><div class="day-label">日</div><div class="day-content">休</div></div></div>
+          <div class="caution">器具の都合で同じパターンしかできない週は1回にとどめて回復を優先する</div>
+        </div>
+        <div class="rule-card"><p class="rule-title">バーベルデッドリフトへの戻し方</p><p class="rule-body-text">ダンベルデッドリフトが<span class="highlight">8〜9kg×12reps</span>を余裕でこなせるようになったら、バーベルを32〜35kgから再スタート</p></div>
+        <div class="rule-card"><p class="rule-title">サイドレイズの上げ方</p>
+          <div style="margin-top:4px;">
+            <div class="step-row"><span class="step-num">1</span><span class="step-text">6kg × 10reps × 3セットをきれいに安定させる</span></div>
+            <div class="step-row"><span class="step-num">2</span><span class="step-text">6kg × 12repsまで増やす</span></div>
+            <div class="step-row"><span class="step-num">3</span><span class="step-text">安定したら7kgに上げて10repsに戻す</span></div>
+            <div class="step-row"><span class="step-num">4</span><span class="step-text">以降同じサイクルを繰り返す</span></div>
+          </div>
+        </div>
+        <div class="tip">「全セット、最後まできれいに動かせる重量」が正しい設定。</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- パターンB -->
+  <div id="pat-dumbbell" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">上半身（押す・引く）メインの日</span><span class="time-badge">55〜65分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ベンチプレス</span><span class="badge badge-chest">胸・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45〜50kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45〜50kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45〜50kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　できれば最初に。混んでいて最後になっても問題なし</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：スミスマシンが使えない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">チェストプレスマシン</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">40〜45kg※</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※マシンにより重さの感覚が異なるため最初のセットで確認</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ダンベルローイング</span><span class="badge badge-back">広背筋・僧帽筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>8kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>14〜16kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>14〜16kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>14〜16kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　16kgが余裕になったら18kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ダンベルスペースが混んでいる場合</button>
+      <div class="alt-body">
+        <p class="alt-name">シーテッドローマシン</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">35〜40kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">補助種目（下半身1つ＋サイドレイズ）</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">レッグプレス（マシン）</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>40kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>50〜60kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>50〜60kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>50〜60kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　最初のセットで重さ確認。膝が内側に入らないよう注意。腰痛時は軽めに</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ブルガリアンスクワット</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>3kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>7kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>7kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>7kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　ダンベルスペースが空いているときに。腰が不安な日は避ける</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ダンベルデッドリフト</span><span class="badge badge-back">脊柱起立筋・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>7〜8kg</td><td>12〜15reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>7〜8kg</td><td>12〜15reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>7〜8kg</td><td>12〜15reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　腰のリハビリ・バーベルデッドへの橋渡しとして行う日に選ぶ</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">サイドレイズ</span><span class="badge badge-shoulder">肩</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1分　6kg×10→12reps安定→7kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：時間が足りない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ショルダープレスマシン</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">10kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">20〜25kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    <div class="rules-section">
+      <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール・スケジュール</button>
+      <div class="rules-body">
+        <div style="height:8px;"></div>
+        <div class="rule-card"><p class="rule-title">重量の上げ方</p><p class="rule-body-text">メイン3セット全て規定レップ数・きれいなフォームでクリア → 次回<span class="highlight">+2.5kg</span></p></div>
+        <div class="rule-card"><p class="rule-title">バーベルデッドリフトへの戻し方</p><p class="rule-body-text">ダンベルデッドリフトが<span class="highlight">8〜9kg×12reps</span>余裕でこなせたら、バーベルを32〜35kgから再スタート</p></div>
+        <div class="tip">「全セット、最後まできれいに動かせる重量」が正しい設定。</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- パターンC -->
+  <div id="pat-machine" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">マシンのみの日・混雑日</span><span class="time-badge">45〜55分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">チェストプレス（マシン）</span><span class="badge badge-chest">胸・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40〜45kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40〜45kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40〜45kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　最初のセットで重さの感覚を確認してから調整</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ラットプルダウン（マシン）</span><span class="badge badge-back">広背筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。43kgへの挑戦を続ける</p>
+    </div>
+
+    <p class="section-title">補助種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ショルダープレス（マシン）</span><span class="badge badge-shoulder">肩・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>20〜25kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>20〜25kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>20〜25kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　サイドレイズの代替としても機能する</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">シーテッドロー（マシン）</span><span class="badge badge-back">広背筋・僧帽筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>35〜40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>35〜40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>35〜40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　ダンベルローイングの代替。最初は35kgで確認</p>
+    </div>
+
+    <div class="tip" style="margin:0 0 8px;">腰にほぼ負担がかかりません。腰の調子が悪い日に積極的に選んでOK。</div>
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    <div class="rules-section">
+      <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール・スケジュール</button>
+      <div class="rules-body">
+        <div style="height:8px;"></div>
+        <div class="rule-card"><p class="rule-title">重量の上げ方</p><p class="rule-body-text">メイン3セット全て規定レップ数・きれいなフォームでクリア → 次回<span class="highlight">+2.5kg</span></p></div>
+        <div class="tip">「全セット、最後まできれいに動かせる重量」が正しい設定。</div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 記録ページ ===== -->
+<div id="page-record" class="page">
+  <div class="record-page">
+    <div class="record-header">
+      <h2>記録する</h2>
+      <input type="date" class="date-select" id="record-date">
+    </div>
+
+    <p class="section-title">パターン</p>
+    <div class="pattern-select-row">
+      <button class="pattern-select-btn active" onclick="selectPattern(this,'A')">A｜スミスマシン</button>
+      <button class="pattern-select-btn" onclick="selectPattern(this,'B')">B｜ダンベル</button>
+      <button class="pattern-select-btn" onclick="selectPattern(this,'C')">C｜マシン</button>
+    </div>
+    <input type="hidden" id="selected-pattern" value="A">
+
+    <p class="section-title">種目の記録</p>
+    <div id="exercise-records"></div>
+
+    <button class="add-exercise-btn" onclick="addExerciseBlock()">＋ 種目を追加</button>
+
+    <p class="section-title">メモ</p>
+    <textarea class="note-area" id="record-note" placeholder="今日の調子・気づきなど（代替種目を使った場合はここに記入）"></textarea>
+
+    <div style="margin-top:14px;">
+      <button class="save-btn" onclick="saveRecord()" style="width:100%;padding:13px;">記録を保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 履歴ページ ===== -->
+<div id="page-history" class="page">
+  <div class="history-page">
+    <div class="history-header">
+      <h2>トレーニング履歴</h2>
+      <button class="csv-btn" onclick="exportCSV()">📥 CSVを出力</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- ===== 分析ページ ===== -->
+<div id="page-analysis" class="page">
+  <div class="analysis-page">
+    <div class="analysis-header">
+      <h2>分析</h2>
+      <p>記録したデータをもとに成長を確認</p>
+    </div>
+    <div id="analysis-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== データ =====
+// パターン別デフォルト種目
+const EXERCISES = {
+  A: ['スミスマシン スクワット','デッドリフト（バーベル）','ラットプルダウン','サイドレイズ'],
+  B: ['ベンチプレス','ダンベルローイング','レッグプレス（マシン）','サイドレイズ'],
+  C: ['チェストプレス（マシン）','ラットプルダウン（マシン）','ショルダープレス（マシン）','シーテッドロー（マシン）']
+};
+
+// 全種目リスト（代替含む）
+const ALL_EXERCISES = [
+  'スミスマシン スクワット',
+  'デッドリフト（バーベル）',
+  'ラットプルダウン',
+  'ラットプルダウン（マシン）',
+  'サイドレイズ',
+  'ベンチプレス',
+  'ダンベルローイング',
+  'ブルガリアンスクワット',
+  'ダンベルデッドリフト',
+  'レッグプレス（マシン）',
+  'チェストプレス（マシン）',
+  'ショルダープレス（マシン）',
+  'シーテッドロー（マシン）',
+  'ダンベルプレス',
+  'スミスマシン・バーベルスクワット',
+  'その他',
+];
+
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('training_records') || '[]'); } catch(e) { return []; }
+}
+function saveRecords(records) {
+  localStorage.setItem('training_records', JSON.stringify(records));
+}
+
+// ===== ナビゲーション =====
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+function showPattern(name, btn) {
+  document.querySelectorAll('.program-content').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pat-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ===== プログラム操作 =====
+function toggleExercise(row) {
+  const check = row.querySelector('.exercise-check');
+  const label = row.querySelector('.check-label');
+  const card = row.closest('.card');
+  check.classList.toggle('checked');
+  label.classList.toggle('checked');
+  label.textContent = check.classList.contains('checked') ? '完了！' : '完了';
+  card.classList.toggle('done');
+}
+function toggleSet(row) { row.classList.toggle('set-done'); }
+function resetChecks(btn) {
+  const content = btn.closest('.program-content');
+  content.querySelectorAll('.exercise-check').forEach(el => el.classList.remove('checked'));
+  content.querySelectorAll('.check-label').forEach(el => { el.classList.remove('checked'); el.textContent = '完了'; });
+  content.querySelectorAll('.card').forEach(el => el.classList.remove('done'));
+  content.querySelectorAll('.row-main').forEach(el => el.classList.remove('set-done'));
+}
+function toggleAlt(btn) { btn.classList.toggle('open'); btn.nextElementSibling.classList.toggle('open'); }
+function toggleRules(btn) { btn.classList.toggle('open'); btn.nextElementSibling.classList.toggle('open'); }
+
+// ===== 記録ページ =====
+let exBlockCount = 0;
+
+function initRecordPage() {
+  if (loadDraft()) return;
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('record-date').value = today;
+  document.getElementById('record-note').value = '';
+  document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pattern-select-btn')[0].classList.add('active');
+  document.getElementById('selected-pattern').value = 'A';
+  renderExerciseInputs('A');
+}
+
+function getDrafts() {
+  try { return JSON.parse(localStorage.getItem('training_draft') || '{}') || {}; } catch(e) { return {}; }
+}
+
+function collectExercises() {
+  const exercises = [];
+  document.querySelectorAll('.record-exercise').forEach(exEl => {
+    const blockId = exEl.id.replace('ex-block-','');
+    const nameEl = document.getElementById('ex-name-' + blockId);
+    const name = nameEl ? nameEl.value : '';
+    const sets = [];
+    exEl.querySelectorAll('.record-set-row').forEach(row => {
+      const inputs = row.querySelectorAll('input[type="number"]');
+      sets.push({ weight: inputs[0].value, reps: inputs[1].value });
+    });
+    exercises.push({ name, sets });
+  });
+  return exercises;
+}
+
+function saveDraft() {
+  const pattern = document.getElementById('selected-pattern').value;
+  const drafts = getDrafts();
+  if (!drafts.patterns) drafts.patterns = {};
+  drafts.patterns[pattern] = {
+    note: document.getElementById('record-note').value,
+    exercises: collectExercises()
+  };
+  drafts.date = document.getElementById('record-date').value;
+  drafts.currentPattern = pattern;
+  localStorage.setItem('training_draft', JSON.stringify(drafts));
+}
+
+function renderExercisesFromData(exercises, pattern) {
+  const container = document.getElementById('exercise-records');
+  container.innerHTML = '';
+  exBlockCount = 0;
+  const defaultExs = EXERCISES[pattern] || EXERCISES.A;
+  exercises.forEach((ex, i) => {
+    const id = exBlockCount++;
+    const removable = i >= defaultExs.length;
+    const div = document.createElement('div');
+    div.innerHTML = makeExBlock(ex.name, id, removable);
+    container.appendChild(div.firstElementChild);
+    while (document.querySelectorAll('#sets-' + id + ' .record-set-row').length < ex.sets.length) {
+      addSet(id);
+    }
+    const rows = document.querySelectorAll('#sets-' + id + ' .record-set-row');
+    ex.sets.forEach((s, idx) => {
+      if (!rows[idx]) return;
+      const inputs = rows[idx].querySelectorAll('input[type="number"]');
+      if (inputs[0]) inputs[0].value = s.weight || '';
+      if (inputs[1]) inputs[1].value = s.reps || '';
+    });
+  });
+}
+
+function loadDraft() {
+  const drafts = getDrafts();
+  if (!drafts.currentPattern || !drafts.patterns) return false;
+  const pattern = drafts.currentPattern;
+  const patData = drafts.patterns[pattern];
+  if (!patData || !patData.exercises) return false;
+  document.getElementById('record-date').value = drafts.date || new Date().toISOString().slice(0,10);
+  document.getElementById('record-note').value = patData.note || '';
+  document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
+  const patIdx = {A:0, B:1, C:2}[pattern] || 0;
+  document.querySelectorAll('.pattern-select-btn')[patIdx].classList.add('active');
+  document.getElementById('selected-pattern').value = pattern;
+  renderExercisesFromData(patData.exercises, pattern);
+  return true;
+}
+
+function selectPattern(btn, pattern) {
+  saveDraft();
+  document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('selected-pattern').value = pattern;
+  const drafts = getDrafts();
+  const patData = drafts.patterns && drafts.patterns[pattern];
+  if (patData && patData.exercises && patData.exercises.length > 0) {
+    document.getElementById('record-note').value = patData.note || '';
+    renderExercisesFromData(patData.exercises, pattern);
+  } else {
+    document.getElementById('record-note').value = '';
+    renderExerciseInputs(pattern);
+  }
+  drafts.currentPattern = pattern;
+  localStorage.setItem('training_draft', JSON.stringify(drafts));
+}
+
+function makeExSelect(blockId, selectedName) {
+  const opts = ALL_EXERCISES.map(ex =>
+    `<option value="${ex}" ${ex === selectedName ? 'selected' : ''}>${ex}</option>`
+  ).join('');
+  return `<select class="record-ex-select" id="ex-name-${blockId}">${opts}</select>`;
+}
+
+function makeExBlock(name, blockId, removable) {
+  const setRows = [makeSetRow(blockId, 0), makeSetRow(blockId, 1), makeSetRow(blockId, 2)].join('');
+  return `
+    <div class="record-exercise" id="ex-block-${blockId}">
+      <div class="record-ex-header">
+        ${makeExSelect(blockId, name)}
+        ${removable ? `<button class="remove-ex-btn" onclick="removeExBlock(${blockId})">×</button>` : ''}
+      </div>
+      <div class="record-sets" id="sets-${blockId}">
+        ${setRows}
+      </div>
+      <button class="add-set-btn" onclick="addSet(${blockId})">＋ セットを追加</button>
+    </div>`;
+}
+
+function renderExerciseInputs(pattern) {
+  const container = document.getElementById('exercise-records');
+  exBlockCount = 0;
+  const exercises = EXERCISES[pattern];
+  container.innerHTML = exercises.map((ex, i) => {
+    const id = exBlockCount++;
+    return makeExBlock(ex, id, false);
+  }).join('');
+}
+
+function addExerciseBlock() {
+  const container = document.getElementById('exercise-records');
+  const id = exBlockCount++;
+  const div = document.createElement('div');
+  div.innerHTML = makeExBlock('ベンチプレス', id, true);
+  container.appendChild(div.firstElementChild);
+}
+
+function removeExBlock(blockId) {
+  const el = document.getElementById('ex-block-' + blockId);
+  if (el) el.remove();
+}
+
+function makeSetRow(blockId, setIdx) {
+  return `
+    <div class="record-set-row">
+      <span class="set-num-label">セット${setIdx+1}</span>
+      <input class="record-input" type="number" inputmode="decimal" enterkeyhint="next" placeholder="重量" step="0.5" min="0">
+      <span class="record-unit">kg ×</span>
+      <input class="record-input" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
+      <span class="record-unit">reps</span>
+      ${setIdx >= 3 ? `<button class="remove-set-btn" onclick="removeSet(this)">×</button>` : ''}
+    </div>`;
+}
+
+function addSet(blockId) {
+  const container = document.getElementById('sets-' + blockId);
+  const count = container.querySelectorAll('.record-set-row').length;
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div class="record-set-row">
+      <span class="set-num-label">セット${count+1}</span>
+      <input class="record-input" type="number" inputmode="decimal" enterkeyhint="next" placeholder="重量" step="0.5" min="0">
+      <span class="record-unit">kg ×</span>
+      <input class="record-input" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
+      <span class="record-unit">reps</span>
+      <button class="remove-set-btn" onclick="removeSet(this)">×</button>
+    </div>`;
+  container.appendChild(div.firstElementChild);
+}
+
+function removeSet(btn) { btn.closest('.record-set-row').remove(); }
+
+function saveRecord() {
+  const date = document.getElementById('record-date').value;
+  const pattern = document.getElementById('selected-pattern').value;
+  const note = document.getElementById('record-note').value;
+  const exerciseData = [];
+
+  document.querySelectorAll('.record-exercise').forEach(exEl => {
+    const blockId = exEl.id.replace('ex-block-','');
+    const nameEl = document.getElementById('ex-name-' + blockId);
+    const name = nameEl ? nameEl.value : '';
+    const sets = [];
+    exEl.querySelectorAll('.record-set-row').forEach(row => {
+      const inputs = row.querySelectorAll('input[type="number"]');
+      const weight = parseFloat(inputs[0].value);
+      const reps = parseInt(inputs[1].value);
+      if (!isNaN(weight) && !isNaN(reps) && weight > 0 && reps > 0) {
+        sets.push({ weight, reps });
+      }
+    });
+    if (name && sets.length > 0) {
+      exerciseData.push({ name, sets });
+    }
+  });
+
+  if (exerciseData.length === 0) { alert('少なくとも1種目を入力してください'); return; }
+
+  const records = getRecords();
+  const existingIdx = records.findIndex(r => r.date === date);
+  const record = { date, pattern, exercises: exerciseData, note };
+  if (existingIdx >= 0) {
+    if (!confirm('同じ日の記録があります。上書きしますか？')) return;
+    records[existingIdx] = record;
+  } else {
+    records.push(record);
+  }
+  records.sort((a,b) => b.date.localeCompare(a.date));
+  saveRecords(records);
+  localStorage.removeItem('training_draft');
+  alert('記録を保存しました！');
+  initRecordPage();
+}
+
+// ===== 履歴ページ =====
+function renderHistory() {
+  const records = getRecords();
+  const container = document.getElementById('history-list');
+  if (records.length === 0) {
+    container.innerHTML = '<div class="history-empty">まだ記録がありません<br>「記録する」タブからトレーニングを記録しましょう</div>';
+    return;
+  }
+  container.innerHTML = records.map((r, idx) => {
+    const exNames = r.exercises.map(e => e.name).join('・');
+    const patClass = `pat-${r.pattern.toLowerCase()}`;
+    const detail = r.exercises.map(e => {
+      const setStr = e.sets.map((s,i) => `セット${i+1}: ${s.weight}kg × ${s.reps}reps`).join('、');
+      return `<div class="detail-ex"><div class="detail-ex-name">${e.name}</div><div class="detail-sets">${setStr}</div></div>`;
+    }).join('');
+    return `
+      <div class="history-item">
+        <div class="history-summary" onclick="toggleDetail(this.closest('.history-item'))">
+          <div class="history-item-header">
+            <span class="history-date">${r.date}</span>
+            <span class="history-pattern ${patClass}">パターン${r.pattern}</span>
+          </div>
+          <div class="history-exercises">${exNames}</div>
+        </div>
+        <div class="history-detail">
+          ${detail}
+          ${r.note ? `<div class="detail-note">📝 ${r.note}</div>` : ''}
+          <div style="display:flex;gap:0;">
+            <button class="delete-log-btn" onclick="confirmDelete(this, '${r.date}')">この記録を削除</button>
+            <button class="edit-log-btn" onclick="showEditForm(this, '${r.date}')">✏️ 編集</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleDetail(item) {
+  item.querySelector('.history-detail').classList.toggle('open');
+}
+
+function confirmDelete(btn, date) {
+  if (btn.dataset.confirmed) {
+    const records = getRecords().filter(r => r.date !== date);
+    saveRecords(records);
+    renderHistory();
+  } else {
+    btn.dataset.confirmed = '1';
+    btn.textContent = '▶ もう一度押すと削除';
+    btn.style.color = '#c0392b';
+  }
+}
+
+function showEditForm(btn, date) {
+  const records = getRecords();
+  const r = records.find(x => x.date === date);
+  if (!r) return;
+  const detail = btn.closest('.history-detail');
+  const patBtns = ['A','B','C'].map(p =>
+    `<button class="edit-pat-btn${r.pattern === p ? ' active' : ''}" onclick="this.closest('.edit-pat-row').querySelectorAll('.edit-pat-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${p}</button>`
+  ).join('');
+  const exBlocks = r.exercises.map((e, ei) => {
+    const setRows = e.sets.map((s, si) =>
+      `<div class="edit-set-row">
+        <span class="edit-set-label">セット${si+1}</span>
+        <input class="edit-input" type="number" inputmode="decimal" placeholder="重量" step="0.5" min="0" value="${s.weight}">
+        <span class="edit-unit">kg ×</span>
+        <input class="edit-input" type="number" inputmode="numeric" placeholder="回数" min="0" value="${s.reps}">
+        <span class="edit-unit">reps</span>
+        <button class="edit-remove-set-btn" onclick="this.closest('.edit-set-row').remove()">×</button>
+      </div>`
+    ).join('');
+    return `<div class="edit-ex-block">
+      <input class="edit-ex-name" type="text" value="${e.name}">
+      <div class="edit-sets-container">${setRows}</div>
+      <button class="edit-add-set-btn" onclick="addEditSet(this)">＋ セット追加</button>
+    </div>`;
+  }).join('');
+  detail.innerHTML = `
+    <div class="history-edit-form">
+      <div class="edit-date-row">
+        <span class="edit-date-label">日付</span>
+        <input class="edit-date-input" type="date" value="${r.date}">
+      </div>
+      <div class="edit-pat-row">${patBtns}</div>
+      <div class="edit-ex-container">${exBlocks}</div>
+      <button class="edit-add-ex-btn" onclick="addEditExBlock(this)">＋ 種目追加</button>
+      <textarea class="edit-note" placeholder="メモ（任意）">${r.note || ''}</textarea>
+      <button class="edit-save-btn" onclick="saveEditRecord(this, '${date}')">保存する</button>
+      <button class="edit-cancel-btn" onclick="renderHistory()">キャンセル</button>
+    </div>`;
+  detail.classList.add('open');
+}
+
+function addEditSet(btn) {
+  const container = btn.previousElementSibling;
+  const count = container.querySelectorAll('.edit-set-row').length;
+  const div = document.createElement('div');
+  div.innerHTML = `<div class="edit-set-row">
+    <span class="edit-set-label">セット${count+1}</span>
+    <input class="edit-input" type="number" inputmode="decimal" placeholder="重量" step="0.5" min="0">
+    <span class="edit-unit">kg ×</span>
+    <input class="edit-input" type="number" inputmode="numeric" placeholder="回数" min="0">
+    <span class="edit-unit">reps</span>
+    <button class="edit-remove-set-btn" onclick="this.closest('.edit-set-row').remove()">×</button>
+  </div>`;
+  container.appendChild(div.firstElementChild);
+}
+
+function addEditExBlock(btn) {
+  const container = btn.previousElementSibling;
+  const div = document.createElement('div');
+  div.innerHTML = `<div class="edit-ex-block">
+    <input class="edit-ex-name" type="text" placeholder="種目名">
+    <div class="edit-sets-container">
+      <div class="edit-set-row">
+        <span class="edit-set-label">セット1</span>
+        <input class="edit-input" type="number" inputmode="decimal" placeholder="重量" step="0.5" min="0">
+        <span class="edit-unit">kg ×</span>
+        <input class="edit-input" type="number" inputmode="numeric" placeholder="回数" min="0">
+        <span class="edit-unit">reps</span>
+        <button class="edit-remove-set-btn" onclick="this.closest('.edit-set-row').remove()">×</button>
+      </div>
+    </div>
+    <button class="edit-add-set-btn" onclick="addEditSet(this)">＋ セット追加</button>
+  </div>`;
+  container.appendChild(div.firstElementChild);
+}
+
+function saveEditRecord(btn, origDate) {
+  const form = btn.closest('.history-edit-form');
+  const newDate = form.querySelector('.edit-date-input').value;
+  if (!newDate) { alert('日付を入力してください'); return; }
+  const patBtn = form.querySelector('.edit-pat-btn.active');
+  const pattern = patBtn ? patBtn.textContent.trim() : 'A';
+  const note = form.querySelector('.edit-note').value;
+  const exercises = [];
+  form.querySelectorAll('.edit-ex-block').forEach(block => {
+    const name = block.querySelector('.edit-ex-name').value.trim();
+    if (!name) return;
+    const sets = [];
+    block.querySelectorAll('.edit-set-row').forEach(row => {
+      const inputs = row.querySelectorAll('.edit-input');
+      const weight = parseFloat(inputs[0].value);
+      const reps = parseInt(inputs[1].value);
+      if (!isNaN(weight) && !isNaN(reps) && weight > 0 && reps > 0) sets.push({ weight, reps });
+    });
+    if (sets.length > 0) exercises.push({ name, sets });
+  });
+  if (exercises.length === 0) { alert('少なくとも1種目を入力してください'); return; }
+  let records = getRecords();
+  const idx = records.findIndex(r => r.date === origDate);
+  if (idx === -1) return;
+  records[idx] = { date: newDate, pattern, note, exercises };
+  records.sort((a, b) => b.date.localeCompare(a.date));
+  saveRecords(records);
+  renderHistory();
+}
+
+// ===== 分析ページ =====
+function renderAnalysis() {
+  const records = getRecords();
+  const container = document.getElementById('analysis-content');
+  if (records.length < 2) {
+    container.innerHTML = '<div class="analysis-empty">記録が2回以上あると<br>分析が表示されます</div>';
+    return;
+  }
+
+  const totalSessions = records.length;
+  const days = Math.round((new Date(records[0].date) - new Date(records[records.length-1].date)) / 86400000) + 1;
+
+  // 種目ごとの最高重量推移
+  const exMap = {};
+  records.slice().reverse().forEach(r => {
+    r.exercises.forEach(e => {
+      if (!exMap[e.name]) exMap[e.name] = [];
+      const maxW = Math.max(...e.sets.map(s => s.weight));
+      exMap[e.name].push({ date: r.date, maxWeight: maxW, sets: e.sets });
+    });
+  });
+
+  // 進捗計算
+  const progressRows = Object.entries(exMap).map(([name, data]) => {
+    if (data.length < 2) return null;
+    const first = data[0].maxWeight;
+    const last = data[data.length-1].maxWeight;
+    const diff = last - first;
+    return { name, first, last, diff };
+  }).filter(Boolean).sort((a,b) => b.diff - a.diff);
+
+  const maxDiff = Math.max(...progressRows.map(r => Math.abs(r.diff)), 1);
+
+  const progressHTML = progressRows.map(r => {
+    const barW = Math.max(Math.round(Math.abs(r.diff) / maxDiff * 100), 4);
+    const color = r.diff >= 0 ? '#1D9E75' : '#e74c3c';
+    const sign = r.diff >= 0 ? '+' : '';
+    return `
+      <div class="ex-progress-row">
+        <span class="ex-progress-name">${r.name.replace('（マシン）','').replace('（バーベル）','')}</span>
+        <div class="ex-progress-bar-wrap"><div class="ex-progress-bar" style="width:${barW}%;background:${color};"></div></div>
+        <span class="ex-progress-val" style="color:${color};">${sign}${r.diff}kg</span>
+      </div>`;
+  }).join('');
+
+  // 週別頻度（直近8週）
+  const weekMap = {};
+  records.forEach(r => {
+    const d = new Date(r.date);
+    const mon = new Date(d); mon.setDate(d.getDate() - d.getDay() + 1);
+    const key = mon.toISOString().slice(0,10);
+    if (!weekMap[key]) weekMap[key] = 0;
+    weekMap[key]++;
+  });
+  const weeks = Object.entries(weekMap).sort((a,b) => a[0].localeCompare(b[0])).slice(-8);
+  const freqHTML = weeks.map(([week, count]) => {
+    const dots = Array.from({length:7}, (_,i) => `<div class="freq-dot ${i < count ? '' : 'rest'}"></div>`).join('');
+    const label = week.slice(5).replace('-','/') + '〜';
+    return `<div class="freq-row"><span class="freq-label">${label}</span><div class="freq-dots">${dots}</div></div>`;
+  }).join('');
+
+  // 最近の主要種目
+  const keyExercises = ['ベンチプレス','ラットプルダウン','デッドリフト（バーベル）'];
+  const recentHTML = keyExercises.map(exName => {
+    const data = exMap[exName];
+    if (!data || data.length === 0) return '';
+    const latest = data[data.length-1];
+    const best = Math.max(...data.map(d => d.maxWeight));
+    return `<div class="ex-progress-row"><span class="ex-progress-name">${exName.replace('（バーベル）','')}</span><div class="ex-progress-bar-wrap"></div><span class="ex-progress-val">${latest.maxWeight}kg</span></div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="metric-grid">
+      <div class="metric-card"><div class="metric-label">総セッション数</div><div class="metric-value">${totalSessions}<span style="font-size:14px;font-weight:400;color:#999;">回</span></div><div class="metric-sub">記録期間 ${days}日</div></div>
+      <div class="metric-card"><div class="metric-label">平均頻度</div><div class="metric-value">${(totalSessions / days * 7).toFixed(1)}<span style="font-size:14px;font-weight:400;color:#999;">回/週</span></div><div class="metric-sub">目標：週2〜3回</div></div>
+    </div>
+
+    <div class="analysis-section">
+      <div class="analysis-section-title">🏋️ 種目別の重量変化（初回→最新）</div>
+      ${progressRows.length > 0 ? progressHTML : '<p style="font-size:13px;color:#aaa;">データが不足しています</p>'}
+    </div>
+
+    <div class="analysis-section">
+      <div class="analysis-section-title">📅 週別トレーニング頻度（直近8週）</div>
+      ${freqHTML || '<p style="font-size:13px;color:#aaa;">データが不足しています</p>'}
+      <p style="font-size:11px;color:#aaa;margin-top:8px;">🔴=トレーニング　⚪=休み（週7日で表示）</p>
+    </div>
+  `;
+}
+
+// ===== CSV出力 =====
+function exportCSV() {
+  const records = getRecords();
+  if (records.length === 0) {
+    alert('記録がありません');
+    return;
+  }
+
+  // ヘッダー
+  const rows = [['日付','パターン','種目名','セット1(kg)','セット1(reps)','セット2(kg)','セット2(reps)','セット3(kg)','セット3(reps)','セット4(kg)','セット4(reps)','メモ']];
+
+  records.slice().reverse().forEach(r => {
+    r.exercises.forEach(ex => {
+      const row = [r.date, r.pattern, ex.name];
+      for (let i = 0; i < 4; i++) {
+        if (ex.sets[i]) {
+          row.push(ex.sets[i].weight, ex.sets[i].reps);
+        } else {
+          row.push('', '');
+        }
+      }
+      row.push(r.note || '');
+      rows.push(row);
+    });
+  });
+
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const bom = '\uFEFF'; // Googleスプレッドシートで日本語文字化けを防ぐ
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `training_${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===== 初期化 =====
+document.addEventListener('DOMContentLoaded', () => {
+  initRecordPage();
+  const recordPage = document.getElementById('page-record');
+  const handler = () => saveDraft();
+  recordPage.addEventListener('input', handler);
+  recordPage.addEventListener('change', handler);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('#page-record .record-input')) {
+      e.preventDefault();
+      const inputs = [...document.querySelectorAll('#page-record .record-input')];
+      const idx = inputs.indexOf(e.target);
+      if (idx >= 0 && idx < inputs.length - 1) {
+        inputs[idx + 1].focus();
+        inputs[idx + 1].select();
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
