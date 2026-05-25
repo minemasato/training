@@ -800,7 +800,7 @@ function loadDraft() {
   const pattern = drafts.currentPattern;
   const patData = drafts.patterns[pattern];
   if (!patData || !patData.exercises) return false;
-  document.getElementById('record-date').value = drafts.date || new Date().toISOString().slice(0,10);
+  document.getElementById('record-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('record-note').value = patData.note || '';
   document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
   const patIdx = {A:0, B:1, C:2}[pattern] || 0;
@@ -1328,6 +1328,12 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs[idx + 1].focus();
         inputs[idx + 1].select();
       }
+    }
+  });
+
+  document.addEventListener('focusin', (e) => {
+    if (e.target.matches('.record-input')) {
+      e.target.select();
     }
   });
 });
