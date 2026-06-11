@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>トレーニングプログラム</title>
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -125,11 +125,24 @@
   .record-sets { display: flex; flex-direction: column; gap: 6px; }
   .record-set-row { display: flex; align-items: center; gap: 8px; }
   .set-num-label { font-size: 12px; color: #aaa; flex: 0 0 40px; }
-  .record-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 14px; text-align: center; width: 72px; background: #fafafa; color: #1a1a1a; -webkit-appearance: none; }
+  .record-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 16px; text-align: center; width: 72px; background: #fafafa; color: #1a1a1a; -webkit-appearance: none; }
   .record-input:focus { outline: none; border-color: #c0392b; background: white; }
   .record-unit { font-size: 12px; color: #999; }
   .add-set-btn { background: none; border: 1px dashed #ddd; border-radius: 8px; padding: 6px; font-size: 12px; color: #bbb; cursor: pointer; margin-top: 4px; width: 100%; }
   .remove-set-btn { background: none; border: none; color: #ddd; font-size: 16px; cursor: pointer; padding: 0 4px; flex-shrink: 0; }
+  .copy-set-btn { background: #f0f0f0; border: none; border-radius: 6px; color: #888; font-size: 11px; font-weight: 600; cursor: pointer; padding: 5px 7px; flex-shrink: 0; }
+  .copy-set-btn:active { background: #e0e0e0; }
+  .prev-record { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: #999; margin: -2px 0 8px; }
+  .prev-fill-btn { background: #eef6f2; border: none; border-radius: 6px; color: #1D9E75; font-size: 11px; font-weight: 600; padding: 5px 10px; cursor: pointer; flex-shrink: 0; }
+  .prev-fill-btn:active { background: #dceee5; }
+  #backup-banner { display: none; align-items: center; gap: 8px; background: #fff8e1; color: #8a6d3b; font-size: 12px; padding: 8px 14px; border-bottom: 1px solid #f0e6c8; }
+  #backup-banner span { flex: 1; }
+  #backup-banner button { background: #e6a817; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  #backup-banner .banner-close { background: none; color: #b09a5e; font-size: 15px; padding: 4px 6px; }
+  .timer-row { display: flex; gap: 8px; margin-bottom: 14px; position: sticky; top: 56px; z-index: 150; background: #f5f5f0; padding: 8px 0; }
+  .timer-chip { flex: 1; padding: 9px 0; border: 1px solid #e0e0e0; border-radius: 8px; background: white; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; }
+  .timer-chip:active { background: #f0f0f0; }
+  #rest-timer-badge { position: fixed; bottom: calc(82px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; border-radius: 24px; padding: 10px 22px; font-size: 15px; font-weight: 700; display: none; z-index: 300; box-shadow: 0 4px 12px rgba(0,0,0,0.25); white-space: nowrap; cursor: pointer; }
 
   .pattern-select-row { display: flex; gap: 8px; margin-bottom: 14px; }
   .pattern-select-btn { flex: 1; padding: 8px 4px; font-size: 13px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
@@ -231,6 +244,12 @@
   <img src="icon.png" class="header-icon" alt="トレーニング">
   <h1>トレーニング</h1>
 </header>
+<div id="backup-banner">
+  <span id="backup-banner-text"></span>
+  <button onclick="exportCSV()">出力</button>
+  <button class="banner-close" onclick="document.getElementById('backup-banner').style.display='none'">✕</button>
+</div>
+<div id="rest-timer-badge" onclick="cancelRestTimer()"></div>
 
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="showPage('program', this)">プログラム</button>
@@ -259,13 +278,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>37〜42kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>37〜42kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>37〜42kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>39.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>39.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>39.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　12reps×3が揃ったら42kgへ</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
       <div class="alt-body">
         <p class="alt-name">ブルガリアンスクワット（ダンベル）</p>
@@ -285,13 +304,13 @@
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ①</span></td></tr>
           <tr class="row-warm"><td>2</td><td>30kg</td><td>5reps</td><td><span class="tag tag-warm">ウォームアップ②</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>37kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>37kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>37kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>39.5kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>39.5kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>39.5kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 2〜3分　腰の状態が悪い日はスクワットのみでOK</p>
+      <p class="rest-note">休憩：メインセット間 2〜3分　39.5kgに上げたばかり。2〜3回定着させてから次へ。昇格条件は「3セット完遂＋翌日の腰の感覚OK」の両方。腰の状態が悪い日はスクワットのみでOK</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
       <div class="alt-body">
         <p class="alt-name">ダンベルデッドリフト</p>
@@ -312,13 +331,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>41kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>41kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>41kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。45kgは封印中。41kg×12reps×3が揃ったら43kgへ</p>
     </div>
 
     <div class="card">
@@ -327,19 +346,19 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>7kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>7kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>7kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1分　6kg×10→12reps安定→7kgへ</p>
+      <p class="rest-note">休憩：メインセット間 1分　6kg×12×3を達成し7kgへ昇格！まず8〜10repsで定着→12repsへ</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：時間が足りない場合</button>
       <div class="alt-body">
         <p class="alt-name">ショルダープレスマシン</p>
         <div class="alt-grid">
           <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">10kg × 15</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">20〜25kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">22.5kg</div></div>
           <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10reps × 3</div></div>
           <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
         </div>
@@ -358,12 +377,12 @@
           <div class="caution">器具の都合で同じパターンしかできない週は1回にとどめて回復を優先する</div>
         </div>
         <div class="rule-card"><p class="rule-title">バーベルデッドリフトへの戻し方</p><p class="rule-body-text">ダンベルデッドリフトが<span class="highlight">8〜9kg×12reps</span>を余裕でこなせるようになったら、バーベルを32〜35kgから再スタート</p></div>
-        <div class="rule-card"><p class="rule-title">サイドレイズの上げ方</p>
+        <div class="rule-card"><p class="rule-title">サイドレイズの上げ方（7kg昇格済み）</p>
           <div style="margin-top:4px;">
-            <div class="step-row"><span class="step-num">1</span><span class="step-text">6kg × 10reps × 3セットをきれいに安定させる</span></div>
-            <div class="step-row"><span class="step-num">2</span><span class="step-text">6kg × 12repsまで増やす</span></div>
-            <div class="step-row"><span class="step-num">3</span><span class="step-text">安定したら7kgに上げて10repsに戻す</span></div>
-            <div class="step-row"><span class="step-num">4</span><span class="step-text">以降同じサイクルを繰り返す</span></div>
+            <div class="step-row"><span class="step-num">1</span><span class="step-text">7kg × 8〜10reps × 3セットをきれいに安定させる</span></div>
+            <div class="step-row"><span class="step-num">2</span><span class="step-text">7kg × 12repsまで増やす</span></div>
+            <div class="step-row"><span class="step-num">3</span><span class="step-text">安定したら8kgに上げて10repsに戻す</span></div>
+            <div class="step-row"><span class="step-num">4</span><span class="step-text">以降同じサイクルを繰り返す。12回できない日があっても焦らない</span></div>
           </div>
         </div>
         <div class="tip">「全セット、最後まできれいに動かせる重量」が正しい設定。</div>
@@ -384,13 +403,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45〜50kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45〜50kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45〜50kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>50kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>50kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>50kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　できれば最初に。混んでいて最後になっても問題なし</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　できれば最初に。50kg×10×3が揃ったら52.5kgへ。3セット目が8〜9repsで止まる間は50kg継続。胸系種目（チェストプレス含む）とは中2〜3日空ける</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：スミスマシンが使えない場合</button>
       <div class="alt-body">
         <p class="alt-name">チェストプレスマシン</p>
@@ -422,7 +441,7 @@
         <p class="alt-name">シーテッドローマシン</p>
         <div class="alt-grid">
           <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">35〜40kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">40kg</div></div>
           <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
           <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
         </div>
@@ -437,13 +456,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>40kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>50〜60kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>50〜60kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>50〜60kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>65kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>65kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>65kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　最初のセットで重さ確認。膝が内側に入らないよう注意。腰痛時は軽めに</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　60kg×12「まだ余裕」のため65kgへ昇格。マシン系は+5kg刻みでOK。膝が内側に入らないよう注意。腰痛時は軽めに</p>
     </div>
 
     <div class="card">
@@ -482,19 +501,19 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>6kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>7kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>7kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>7kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1分　6kg×10→12reps安定→7kgへ</p>
+      <p class="rest-note">休憩：メインセット間 1分　6kg×12×3を達成し7kgへ昇格！まず8〜10repsで定着→12repsへ</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：時間が足りない場合</button>
       <div class="alt-body">
         <p class="alt-name">ショルダープレスマシン</p>
         <div class="alt-grid">
           <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">10kg × 15</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">20〜25kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">22.5kg</div></div>
           <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10reps × 3</div></div>
           <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
         </div>
@@ -526,13 +545,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40〜45kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40〜45kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40〜45kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　最初のセットで重さの感覚を確認してから調整</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　重量が迷走気味のため40kgに固定してフォーム再構築。シート高さは毎回同じ設定（グリップが胸の高さ）。40kg×12×3が作れたら42.5kgへ</p>
     </div>
 
     <div class="card">
@@ -541,13 +560,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40〜41kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>41kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>41kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>41kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。43kgへの挑戦を続ける</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。45kgは封印中。41kg×12reps×3が揃ったら43kgへ</p>
     </div>
 
     <p class="section-title">補助種目</p>
@@ -558,13 +577,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>20〜25kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>20〜25kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>20〜25kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>22.5kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>22.5kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>22.5kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　サイドレイズの代替としても機能する</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　20kg×12×3達成のため22.5kgへ昇格。サイドレイズの代替としても機能する</p>
     </div>
 
     <div class="card">
@@ -573,13 +592,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>35〜40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>35〜40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>35〜40kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>40kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　ダンベルローイングの代替。最初は35kgで確認</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　35→40kgへの昇格に成功。40kgで2〜3回定着させてから42.5kgへ</p>
     </div>
 
     <div class="tip" style="margin:0 0 8px;">腰にほぼ負担がかかりません。腰の調子が悪い日に積極的に選んでOK。</div>
@@ -611,6 +630,14 @@
       <button class="pattern-select-btn" onclick="selectPattern(this,'C')">C｜マシン</button>
     </div>
     <input type="hidden" id="selected-pattern" value="A">
+
+    <p class="section-title">休憩タイマー</p>
+    <div class="timer-row">
+      <button class="timer-chip" onclick="startRestTimer(60)">1:00</button>
+      <button class="timer-chip" onclick="startRestTimer(90)">1:30</button>
+      <button class="timer-chip" onclick="startRestTimer(120)">2:00</button>
+      <button class="timer-chip" onclick="startRestTimer(180)">3:00</button>
+    </div>
 
     <p class="section-title">種目の記録</p>
     <div id="exercise-records"></div>
@@ -646,6 +673,49 @@
       <h2>分析</h2>
       <p>記録したデータをもとに成長を確認</p>
     </div>
+
+    <!-- トレーナー分析 2026-06-12 -->
+    <div class="analysis-section" style="background:white;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      <div class="analysis-section-title">📋 トレーナー分析（2026-06-12）</div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">✅ 昇格した種目</p>
+        <p class="rule-body-text">
+          <span class="highlight">サイドレイズ 7kg</span>（6kg×12×3を4回連続達成）<br>
+          <span class="highlight">レッグプレス 65kg</span>（60kg×12で余裕あり）<br>
+          <span class="highlight">ショルダープレス 22.5kg</span>（20kg×12×3達成）<br>
+          <span class="highlight">シーテッドロー 40kg</span>（昇格済み、定着中）
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">🔜 あと一歩</p>
+        <p class="rule-body-text">
+          <b>ベンチプレス</b>：50kg×10,10,8。3セット目の10repsが揃ったら<span class="highlight">52.5kg</span>へ<br>
+          <b>スミススクワット</b>：39.5kg×11,12,12。12×3が揃ったら<span class="highlight">42kg</span>へ
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">⚠️ 慎重にいく種目</p>
+        <p class="rule-body-text">
+          <b>デッドリフト</b>：39.5kgに上げたばかり。2〜3回定着＋<span class="highlight">翌日の腰の感覚</span>を昇格条件に<br>
+          <b>ラットプルダウン</b>：45kgは封印。41kg×12reps×3 → 43kgが安全な道筋<br>
+          <b>ブルガリアンスクワット</b>：腰痛メモあり。重量据え置きでフォーム優先（前足カカト重心・上体は軽い前傾まで）
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">📌 全体の注意点</p>
+        <p class="rule-body-text">
+          ① 胸系種目（ベンチ・チェストプレス）は<span class="highlight">中2〜3日</span>空ける。6/3チェストプレス→6/5ベンチの中1日で重量が落ちた<br>
+          ② チェストプレスは<span class="highlight">40kg固定</span>でフォーム再構築。シート高さを毎回同じに
+        </p>
+      </div>
+
+      <div class="tip" style="margin-top:8px;">次回分析は7月頭。ベンチ52.5kg到達とサイドレイズ7kg定着を確認予定。</div>
+    </div>
+
     <div id="analysis-content"></div>
   </div>
 </div>
@@ -792,6 +862,7 @@ function renderExercisesFromData(exercises, pattern) {
       if (inputs[1]) inputs[1].value = s.reps || '';
     });
   });
+  updateAllPrevRecords();
 }
 
 function loadDraft() {
@@ -836,13 +907,14 @@ function makeExSelect(blockId, selectedName) {
 }
 
 function makeExBlock(name, blockId, removable) {
-  const setRows = [makeSetRow(blockId, 0), makeSetRow(blockId, 1), makeSetRow(blockId, 2)].join('');
+  const setRows = [makeSetRow(blockId, 0), makeSetRow(blockId, 1), makeSetRow(blockId, 2), makeSetRow(blockId, 3)].join('');
   return `
     <div class="record-exercise" id="ex-block-${blockId}">
       <div class="record-ex-header">
         ${makeExSelect(blockId, name)}
         ${removable ? `<button class="remove-ex-btn" onclick="removeExBlock(${blockId})">×</button>` : ''}
       </div>
+      <div class="prev-record" id="prev-${blockId}"></div>
       <div class="record-sets" id="sets-${blockId}">
         ${setRows}
       </div>
@@ -858,6 +930,7 @@ function renderExerciseInputs(pattern) {
     const id = exBlockCount++;
     return makeExBlock(ex, id, false);
   }).join('');
+  updateAllPrevRecords();
 }
 
 function addExerciseBlock() {
@@ -866,6 +939,7 @@ function addExerciseBlock() {
   const div = document.createElement('div');
   div.innerHTML = makeExBlock('ベンチプレス', id, true);
   container.appendChild(div.firstElementChild);
+  updatePrevRecord(id);
 }
 
 function removeExBlock(blockId) {
@@ -881,8 +955,155 @@ function makeSetRow(blockId, setIdx) {
       <span class="record-unit">kg ×</span>
       <input class="record-input" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
       <span class="record-unit">reps</span>
+      ${setIdx >= 1 ? `<button class="copy-set-btn" onclick="copyPrevSet(this)">↑同</button>` : ''}
       ${setIdx >= 3 ? `<button class="remove-set-btn" onclick="removeSet(this)">×</button>` : ''}
     </div>`;
+}
+
+function copyPrevSet(btn) {
+  const row = btn.closest('.record-set-row');
+  const prev = row.previousElementSibling;
+  if (!prev || !prev.classList.contains('record-set-row')) return;
+  const prevInputs = prev.querySelectorAll('input[type="number"]');
+  const curInputs = row.querySelectorAll('input[type="number"]');
+  curInputs[0].value = prevInputs[0].value;
+  curInputs[1].value = prevInputs[1].value;
+  saveDraft();
+}
+
+// ===== 前回記録の表示・引き継ぎ =====
+function getLastRecord(name) {
+  const records = getRecords(); // 日付降順
+  for (const r of records) {
+    const ex = r.exercises.find(e => e.name === name);
+    if (ex) return { date: r.date, sets: ex.sets };
+  }
+  return null;
+}
+
+function updatePrevRecord(blockId) {
+  const el = document.getElementById('prev-' + blockId);
+  const nameEl = document.getElementById('ex-name-' + blockId);
+  if (!el || !nameEl) return;
+  const last = getLastRecord(nameEl.value);
+  if (!last) { el.innerHTML = ''; return; }
+  const setsStr = last.sets.map(s => `${s.weight}×${s.reps}`).join(', ');
+  const d = last.date.slice(5).replace('-', '/');
+  el.innerHTML = `<span>前回(${d}): ${setsStr}</span><button class="prev-fill-btn" onclick="fillFromLast(${blockId})">前回と同じ</button>`;
+}
+
+function updateAllPrevRecords() {
+  document.querySelectorAll('.record-exercise').forEach(exEl => {
+    updatePrevRecord(exEl.id.replace('ex-block-', ''));
+  });
+}
+
+function fillFromLast(blockId) {
+  const nameEl = document.getElementById('ex-name-' + blockId);
+  const last = getLastRecord(nameEl.value);
+  if (!last) return;
+  const container = document.getElementById('sets-' + blockId);
+  while (container.querySelectorAll('.record-set-row').length < last.sets.length) addSet(blockId);
+  const rows = container.querySelectorAll('.record-set-row');
+  last.sets.forEach((s, i) => {
+    const inputs = rows[i].querySelectorAll('input[type="number"]');
+    inputs[0].value = s.weight;
+    inputs[1].value = s.reps;
+  });
+  saveDraft();
+}
+
+// ===== 昇格判定 =====
+const PROMOTION_RULES = {
+  'スミスマシン スクワット': { reps: 12, inc: 2.5 },
+  'デッドリフト（バーベル）': { reps: 10, inc: 2.5, caution: true },
+  'ラットプルダウン': { reps: 12, inc: 2 },
+  'ラットプルダウン（マシン）': { reps: 12, inc: 2 },
+  'サイドレイズ': { reps: 12, inc: 1 },
+  'ベンチプレス': { reps: 10, inc: 2.5 },
+  'ダンベルローイング': { reps: 12, inc: 2 },
+  'ブルガリアンスクワット': { reps: 12, inc: 1 },
+  'ダンベルデッドリフト': { reps: 15, inc: 1 },
+  'レッグプレス（マシン）': { reps: 12, inc: 5 },
+  'チェストプレス（マシン）': { reps: 12, inc: 2.5 },
+  'ショルダープレス（マシン）': { reps: 10, inc: 2.5 },
+  'シーテッドロー（マシン）': { reps: 10, inc: 2.5 }
+};
+
+function checkPromotions(exerciseData) {
+  const msgs = [];
+  exerciseData.forEach(ex => {
+    const rule = PROMOTION_RULES[ex.name];
+    if (!rule || ex.sets.length === 0) return;
+    const maxW = Math.max(...ex.sets.map(s => s.weight));
+    const mainSets = ex.sets.filter(s => s.weight === maxW);
+    if (mainSets.length >= 3 && mainSets.every(s => s.reps >= rule.reps)) {
+      let m = `🎉 ${ex.name}: ${maxW}kg×${rule.reps}reps×3セット完遂！次回 ${maxW + rule.inc}kg に挑戦`;
+      if (rule.caution) m += '\n（翌日の腰の感覚も確認してから判断）';
+      msgs.push(m);
+    }
+  });
+  return msgs;
+}
+
+// ===== 休憩タイマー =====
+let restTimerEnd = null, restTimerInt = null, audioCtx = null;
+
+function startRestTimer(sec) {
+  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  restTimerEnd = Date.now() + sec * 1000;
+  clearInterval(restTimerInt);
+  restTimerInt = setInterval(tickRestTimer, 250);
+  document.getElementById('rest-timer-badge').style.display = 'block';
+  tickRestTimer();
+}
+
+function tickRestTimer() {
+  const badge = document.getElementById('rest-timer-badge');
+  const remain = Math.ceil((restTimerEnd - Date.now()) / 1000);
+  if (remain <= 0) {
+    clearInterval(restTimerInt);
+    badge.textContent = '✅ 休憩終了！次のセットへ';
+    beep();
+    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+    setTimeout(() => { badge.style.display = 'none'; }, 6000);
+    return;
+  }
+  const m = Math.floor(remain / 60), s = remain % 60;
+  badge.textContent = `⏱ ${m}:${String(s).padStart(2, '0')}（タップで中止）`;
+}
+
+function cancelRestTimer() {
+  clearInterval(restTimerInt);
+  document.getElementById('rest-timer-badge').style.display = 'none';
+}
+
+function beep() {
+  if (!audioCtx) return;
+  try {
+    for (let i = 0; i < 3; i++) {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value = 880;
+      const t = audioCtx.currentTime + i * 0.35;
+      g.gain.setValueAtTime(0.4, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      o.start(t); o.stop(t + 0.3);
+    }
+  } catch(e) {}
+}
+
+// ===== バックアップリマインド =====
+function checkBackupReminder() {
+  const records = getRecords();
+  if (records.length === 0) return;
+  const last = localStorage.getItem('training_last_export');
+  const days = last ? Math.floor((Date.now() - new Date(last)) / 86400000) : null;
+  if (last && days < 14) return;
+  document.getElementById('backup-banner-text').textContent =
+    last ? `最後のCSV出力から${days}日経過。バックアップ推奨` : 'データ保護のためCSV出力をおすすめします';
+  document.getElementById('backup-banner').style.display = 'flex';
 }
 
 function addSet(blockId) {
@@ -896,6 +1117,7 @@ function addSet(blockId) {
       <span class="record-unit">kg ×</span>
       <input class="record-input" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
       <span class="record-unit">reps</span>
+      <button class="copy-set-btn" onclick="copyPrevSet(this)">↑同</button>
       <button class="remove-set-btn" onclick="removeSet(this)">×</button>
     </div>`;
   container.appendChild(div.firstElementChild);
@@ -929,6 +1151,9 @@ function saveRecord() {
 
   if (exerciseData.length === 0) { alert('少なくとも1種目を入力してください'); return; }
 
+  const dateStr = `${date.slice(0,4)}年${parseInt(date.slice(5,7))}月${parseInt(date.slice(8,10))}日`;
+  if (!confirm(`${dateStr}（${pattern}パターン）の記録として保存します。よろしいですか？`)) return;
+
   const records = getRecords();
   const existingIdx = records.findIndex(r => r.date === date);
   const record = { date, pattern, exercises: exerciseData, note };
@@ -941,7 +1166,8 @@ function saveRecord() {
   records.sort((a,b) => b.date.localeCompare(a.date));
   saveRecords(records);
   localStorage.removeItem('training_draft');
-  alert('記録を保存しました！');
+  const promos = checkPromotions(exerciseData);
+  alert('記録を保存しました！' + (promos.length ? '\n\n' + promos.join('\n\n') : ''));
   initRecordPage();
 }
 
@@ -1174,6 +1400,10 @@ function renderAnalysis() {
     return `<div class="ex-progress-row"><span class="ex-progress-name">${exName.replace('（バーベル）','')}</span><div class="ex-progress-bar-wrap"></div><span class="ex-progress-val">${latest.maxWeight}kg</span></div>`;
   }).join('');
 
+  window._chartExMap = exMap;
+  const chartable = Object.keys(exMap).filter(n => exMap[n].length >= 2);
+  const chartOpts = chartable.map(n => `<option value="${n}">${n}</option>`).join('');
+
   container.innerHTML = `
     <div class="metric-grid">
       <div class="metric-card"><div class="metric-label">総セッション数</div><div class="metric-value">${totalSessions}<span style="font-size:14px;font-weight:400;color:#999;">回</span></div><div class="metric-sub">記録期間 ${days}日</div></div>
@@ -1186,11 +1416,57 @@ function renderAnalysis() {
     </div>
 
     <div class="analysis-section">
+      <div class="analysis-section-title">📈 種目別の重量推移</div>
+      ${chartable.length > 0 ? `<select id="chart-ex-select" class="record-ex-select" style="margin-bottom:10px;width:100%;" onchange="renderExerciseChart(this.value)">${chartOpts}</select><div id="ex-chart"></div>` : '<p style="font-size:13px;color:#aaa;">データが不足しています</p>'}
+    </div>
+
+    <div class="analysis-section">
       <div class="analysis-section-title">📅 週別トレーニング頻度（直近8週）</div>
       ${freqHTML || '<p style="font-size:13px;color:#aaa;">データが不足しています</p>'}
       <p style="font-size:11px;color:#aaa;margin-top:8px;">🔴=トレーニング　⚪=休み（週7日で表示）</p>
     </div>
   `;
+
+  if (chartable.length > 0) {
+    const def = chartable.includes('ベンチプレス') ? 'ベンチプレス' : chartable[0];
+    document.getElementById('chart-ex-select').value = def;
+    renderExerciseChart(def);
+  }
+}
+
+function renderExerciseChart(name) {
+  const data = (window._chartExMap && window._chartExMap[name]) || [];
+  const el = document.getElementById('ex-chart');
+  if (!el) return;
+  if (data.length < 2) { el.innerHTML = '<p style="font-size:13px;color:#aaa;">データが不足しています</p>'; return; }
+  const pts = data.slice(-15);
+  const W = 320, H = 170, padL = 14, padR = 14, padT = 18, padB = 26;
+  const ws = pts.map(p => p.maxWeight);
+  let min = Math.min(...ws), max = Math.max(...ws);
+  if (min === max) { min -= 2.5; max += 2.5; }
+  const span = max - min;
+  min -= span * 0.2; max += span * 0.2;
+  const x = i => padL + (W - padL - padR) * (i / (pts.length - 1));
+  const y = w => padT + (H - padT - padB) * (1 - (w - min) / (max - min));
+  const line = pts.map((p, i) => `${x(i).toFixed(1)},${y(p.maxWeight).toFixed(1)}`).join(' ');
+  const best = Math.max(...ws);
+  const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p.maxWeight).toFixed(1)}" r="3.5" fill="${p.maxWeight === best ? '#1D9E75' : '#c0392b'}"/>`).join('');
+  const labels = pts.map((p, i) => {
+    if (i === 0 || i === pts.length - 1 || (p.maxWeight === best && pts.findIndex(q => q.maxWeight === best) === i)) {
+      return `<text x="${x(i).toFixed(1)}" y="${(y(p.maxWeight) - 8).toFixed(1)}" font-size="10" fill="#666" text-anchor="middle">${p.maxWeight}</text>`;
+    }
+    return '';
+  }).join('');
+  const d0 = pts[0].date.slice(5).replace('-', '/'), d1 = pts[pts.length - 1].date.slice(5).replace('-', '/');
+  el.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;">
+      <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#eee"/>
+      <polyline points="${line}" fill="none" stroke="#c0392b" stroke-width="2"/>
+      ${dots}${labels}
+      <text x="${padL}" y="${H - 8}" font-size="10" fill="#aaa">${d0}</text>
+      <text x="${W - padR}" y="${H - 8}" font-size="10" fill="#aaa" text-anchor="end">${d1}</text>
+    </svg>
+    <p style="font-size:11px;color:#aaa;margin-top:4px;">各日の最大重量の推移（直近${pts.length}回）　🟢=自己ベスト</p>`;
 }
 
 // ===== CSV出力 =====
@@ -1229,6 +1505,8 @@ function exportCSV() {
   a.download = `training_${today}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+  localStorage.setItem('training_last_export', today);
+  document.getElementById('backup-banner').style.display = 'none';
 }
 
 // ===== CSVインポート =====
@@ -1314,10 +1592,16 @@ function parseCSVLine(line) {
 // ===== 初期化 =====
 document.addEventListener('DOMContentLoaded', () => {
   initRecordPage();
+  checkBackupReminder();
   const recordPage = document.getElementById('page-record');
   const handler = () => saveDraft();
   recordPage.addEventListener('input', handler);
   recordPage.addEventListener('change', handler);
+  recordPage.addEventListener('change', (e) => {
+    if (e.target.matches('.record-ex-select')) {
+      updatePrevRecord(e.target.id.replace('ex-name-', ''));
+    }
+  });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.matches('#page-record .record-input')) {
