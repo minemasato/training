@@ -164,6 +164,7 @@
   .pat-a { background: #fef3c7; color: #92400e; }
   .pat-b { background: #dbeafe; color: #1d4ed8; }
   .pat-c { background: #d1fae5; color: #065f46; }
+  .pat-d { background: #ede9fe; color: #5b21b6; }
   .history-exercises { font-size: 12px; color: #888; line-height: 1.6; }
   .history-detail { display: none; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
   .history-detail.open { display: block; }
@@ -264,6 +265,7 @@
     <button class="pat-btn active" onclick="showPattern('smith', this)">A｜スミスマシン</button>
     <button class="pat-btn" onclick="showPattern('dumbbell', this)">B｜ダンベル</button>
     <button class="pat-btn" onclick="showPattern('machine', this)">C｜マシン</button>
+    <button class="pat-btn" onclick="showPattern('home', this)">D｜自宅</button>
   </div>
 
   <!-- パターンA -->
@@ -613,6 +615,105 @@
     </div>
     </div>
   </div>
+
+  <!-- パターンD -->
+  <div id="pat-home" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">自宅・悪天候の日（押す・脚・体幹）</span><span class="time-badge">40〜50分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">プッシュアップバー腕立て伏せ</span><span class="badge badge-chest">胸・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>膝つき</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>15〜20reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>15〜20reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>自重</td><td>15〜20reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　ベンチプレスの代替。余裕があれば足を椅子・ソファに乗せたデクライン形で負荷UP。手首を立てて胸を深く下ろす</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ブルガリアンスクワット（自重）</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>1</td><td>自重</td><td>12〜15reps</td><td><span class="tag tag-main">メイン（片側）</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>12〜15reps</td><td><span class="tag tag-main">メイン（片側）</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>12〜15reps</td><td><span class="tag tag-main">メイン（片側）</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　後ろ足を椅子・ソファに。下ろし3秒のスローテンポで効かせる。前足カカト重心・上体は軽い前傾まで。腰に違和感が出たら即中止</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">グルートブリッジ</span><span class="badge badge-back">臀部・ハム</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>1</td><td>自重</td><td>15reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>15reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>15reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1分　デッドリフトの代替（腰への負荷ほぼゼロ）。トップで2秒キープ、腰を反らせず「お尻で持ち上げる」。余裕が出たら片足ずつに進化</p>
+    </div>
+
+    <p class="section-title">補助種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">パイクプッシュアップ</span><span class="badge badge-shoulder">肩</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>1</td><td>自重</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　サイドレイズ/ショルダープレスの代替。お尻を高く上げ、頭を斜め前に下ろす</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">アブローラー（膝コロ）</span><span class="badge badge-back">体幹</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>1</td><td>自重</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>8〜10reps</td><td><span class="tag tag-main">メイン（余裕があれば）</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　⚠️ 必ず膝コロ・浅めから。腰が反った瞬間に終了。「お腹を丸めたまま」転がせる範囲だけ。立ちコロは当面禁止</p>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    <div class="rules-section">
+      <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール</button>
+      <div class="rules-body">
+        <div style="height:8px;"></div>
+        <div class="rule-card"><p class="rule-title">自重の強度の上げ方</p>
+          <div style="margin-top:4px;">
+            <div class="step-row"><span class="step-num">1</span><span class="step-text">テンポを落とす（下ろし3秒）</span></div>
+            <div class="step-row"><span class="step-num">2</span><span class="step-text">可動域を深くする</span></div>
+            <div class="step-row"><span class="step-num">3</span><span class="step-text">レップ数を増やす</span></div>
+          </div>
+        </div>
+        <div class="rule-card"><p class="rule-title">背中の種目について</p><p class="rule-body-text">自宅器具では広背筋の代替が困難。自宅の日は「押す・脚・体幹の日」と割り切り、<span class="highlight">次のジムで背中を優先</span>する</p></div>
+        <div class="rule-card"><p class="rule-title">アブローラーの注意</p><p class="rule-body-text">腰痛歴がある人が最も事故りやすい器具。<span class="highlight">腰が反ったらその場で終了</span>。戻れるギリギリまで伸ばさず、浅めで回数を稼ぐ</p></div>
+        <div class="tip">記録するときは重量欄を空欄（または0）にすると「自重」として保存されます。</div>
+      </div>
+    </div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== 記録ページ ===== -->
@@ -628,6 +729,7 @@
       <button class="pattern-select-btn active" onclick="selectPattern(this,'A')">A｜スミスマシン</button>
       <button class="pattern-select-btn" onclick="selectPattern(this,'B')">B｜ダンベル</button>
       <button class="pattern-select-btn" onclick="selectPattern(this,'C')">C｜マシン</button>
+      <button class="pattern-select-btn" onclick="selectPattern(this,'D')">D｜自宅</button>
     </div>
     <input type="hidden" id="selected-pattern" value="A">
 
@@ -726,7 +828,8 @@
 const EXERCISES = {
   A: ['スミスマシン スクワット','デッドリフト（バーベル）','ラットプルダウン','サイドレイズ'],
   B: ['ベンチプレス','ダンベルローイング','レッグプレス（マシン）','サイドレイズ'],
-  C: ['チェストプレス（マシン）','ラットプルダウン（マシン）','ショルダープレス（マシン）','シーテッドロー（マシン）']
+  C: ['チェストプレス（マシン）','ラットプルダウン（マシン）','ショルダープレス（マシン）','シーテッドロー（マシン）'],
+  D: ['プッシュアップバー腕立て伏せ','ブルガリアンスクワット（自重）','グルートブリッジ','パイクプッシュアップ','アブローラー（膝コロ）']
 };
 
 // 全種目リスト（代替含む）
@@ -746,6 +849,11 @@ const ALL_EXERCISES = [
   'シーテッドロー（マシン）',
   'ダンベルプレス',
   'スミスマシン・バーベルスクワット',
+  'プッシュアップバー腕立て伏せ',
+  'ブルガリアンスクワット（自重）',
+  'グルートブリッジ',
+  'パイクプッシュアップ',
+  'アブローラー（膝コロ）',
   'その他',
 ];
 
@@ -874,7 +982,7 @@ function loadDraft() {
   document.getElementById('record-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('record-note').value = patData.note || '';
   document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
-  const patIdx = {A:0, B:1, C:2}[pattern] || 0;
+  const patIdx = {A:0, B:1, C:2, D:3}[pattern] || 0;
   document.querySelectorAll('.pattern-select-btn')[patIdx].classList.add('active');
   document.getElementById('selected-pattern').value = pattern;
   renderExercisesFromData(patData.exercises, pattern);
@@ -987,7 +1095,7 @@ function updatePrevRecord(blockId) {
   if (!el || !nameEl) return;
   const last = getLastRecord(nameEl.value);
   if (!last) { el.innerHTML = ''; return; }
-  const setsStr = last.sets.map(s => `${s.weight}×${s.reps}`).join(', ');
+  const setsStr = last.sets.map(s => `${s.weight > 0 ? s.weight : '自重'}×${s.reps}`).join(', ');
   const d = last.date.slice(5).replace('-', '/');
   el.innerHTML = `<span>前回(${d}): ${setsStr}</span><button class="prev-fill-btn" onclick="fillFromLast(${blockId})">前回と同じ</button>`;
 }
@@ -1138,9 +1246,10 @@ function saveRecord() {
     const sets = [];
     exEl.querySelectorAll('.record-set-row').forEach(row => {
       const inputs = row.querySelectorAll('input[type="number"]');
-      const weight = parseFloat(inputs[0].value);
+      const wRaw = parseFloat(inputs[0].value);
+      const weight = isNaN(wRaw) ? 0 : wRaw; // 空欄・0は自重として扱う
       const reps = parseInt(inputs[1].value);
-      if (!isNaN(weight) && !isNaN(reps) && weight > 0 && reps > 0) {
+      if (!isNaN(reps) && reps > 0) {
         sets.push({ weight, reps });
       }
     });
@@ -1183,7 +1292,7 @@ function renderHistory() {
     const exNames = r.exercises.map(e => e.name).join('・');
     const patClass = `pat-${r.pattern.toLowerCase()}`;
     const detail = r.exercises.map(e => {
-      const setStr = e.sets.map((s,i) => `セット${i+1}: ${s.weight}kg × ${s.reps}reps`).join('、');
+      const setStr = e.sets.map((s,i) => `セット${i+1}: ${s.weight > 0 ? s.weight + 'kg' : '自重'} × ${s.reps}reps`).join('、');
       return `<div class="detail-ex"><div class="detail-ex-name">${e.name}</div><div class="detail-sets">${setStr}</div></div>`;
     }).join('');
     return `
@@ -1228,7 +1337,7 @@ function showEditForm(btn, date) {
   const r = records.find(x => x.date === date);
   if (!r) return;
   const detail = btn.closest('.history-detail');
-  const patBtns = ['A','B','C'].map(p =>
+  const patBtns = ['A','B','C','D'].map(p =>
     `<button class="edit-pat-btn${r.pattern === p ? ' active' : ''}" onclick="this.closest('.edit-pat-row').querySelectorAll('.edit-pat-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${p}</button>`
   ).join('');
   const exBlocks = r.exercises.map((e, ei) => {
@@ -1315,7 +1424,7 @@ function saveEditRecord(btn, origDate) {
       const inputs = row.querySelectorAll('.edit-input');
       const weight = parseFloat(inputs[0].value);
       const reps = parseInt(inputs[1].value);
-      if (!isNaN(weight) && !isNaN(reps) && weight > 0 && reps > 0) sets.push({ weight, reps });
+      if (!isNaN(reps) && reps > 0) sets.push({ weight: isNaN(weight) ? 0 : weight, reps });
     });
     if (sets.length > 0) exercises.push({ name, sets });
   });
