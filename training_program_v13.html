@@ -142,7 +142,7 @@
   .timer-row { display: flex; gap: 8px; margin-bottom: 14px; position: sticky; top: 56px; z-index: 150; background: #f5f5f0; padding: 8px 0; }
   .timer-chip { flex: 1; padding: 9px 0; border: 1px solid #e0e0e0; border-radius: 8px; background: white; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; }
   .timer-chip:active { background: #f0f0f0; }
-  #rest-timer-badge { position: fixed; bottom: calc(82px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; border-radius: 24px; padding: 10px 22px; font-size: 15px; font-weight: 700; display: none; z-index: 300; box-shadow: 0 4px 12px rgba(0,0,0,0.25); white-space: nowrap; cursor: pointer; }
+  #rest-timer-badge { position: sticky; top: 104px; z-index: 150; background: #1a1a1a; color: white; border-radius: 12px; padding: 12px 16px; font-size: 16px; font-weight: 700; text-align: center; display: none; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
 
   .pattern-select-row { display: flex; gap: 8px; margin-bottom: 14px; }
   .pattern-select-btn { flex: 1; padding: 8px 4px; font-size: 13px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
@@ -250,7 +250,6 @@
   <button onclick="exportCSV()">出力</button>
   <button class="banner-close" onclick="document.getElementById('backup-banner').style.display='none'">✕</button>
 </div>
-<div id="rest-timer-badge" onclick="cancelRestTimer()"></div>
 
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="showPage('program', this)">プログラム</button>
@@ -724,6 +723,15 @@
       <input type="date" class="date-select" id="record-date">
     </div>
 
+    <p class="section-title">休憩タイマー</p>
+    <div class="timer-row">
+      <button class="timer-chip" onclick="startRestTimer(60)">1:00</button>
+      <button class="timer-chip" onclick="startRestTimer(90)">1:30</button>
+      <button class="timer-chip" onclick="startRestTimer(120)">2:00</button>
+      <button class="timer-chip" onclick="startRestTimer(180)">3:00</button>
+    </div>
+    <div id="rest-timer-badge" onclick="cancelRestTimer()"></div>
+
     <p class="section-title">パターン</p>
     <div class="pattern-select-row">
       <button class="pattern-select-btn active" onclick="selectPattern(this,'A')">A｜スミスマシン</button>
@@ -732,14 +740,6 @@
       <button class="pattern-select-btn" onclick="selectPattern(this,'D')">D｜自宅</button>
     </div>
     <input type="hidden" id="selected-pattern" value="A">
-
-    <p class="section-title">休憩タイマー</p>
-    <div class="timer-row">
-      <button class="timer-chip" onclick="startRestTimer(60)">1:00</button>
-      <button class="timer-chip" onclick="startRestTimer(90)">1:30</button>
-      <button class="timer-chip" onclick="startRestTimer(120)">2:00</button>
-      <button class="timer-chip" onclick="startRestTimer(180)">3:00</button>
-    </div>
 
     <p class="section-title">種目の記録</p>
     <div id="exercise-records"></div>
@@ -816,6 +816,72 @@
       </div>
 
       <div class="tip" style="margin-top:8px;">次回分析は7月頭。ベンチ52.5kg到達とサイドレイズ7kg定着を確認予定。</div>
+    </div>
+
+    <!-- 腹筋を割るロードマップ 2026-06-19 -->
+    <div class="analysis-section" style="background:white;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      <div class="analysis-section-title">🎯 腹筋ロードマップ（体組成 2026-06-19）</div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">📊 現状（TANITA測定）</p>
+        <p class="rule-body-text">
+          体重 <span class="highlight">63.9kg</span>／体脂肪率 <span class="highlight">17.6%</span>／脂肪量 11.2kg<br>
+          筋肉量 50.0kg（標準上限・体幹+1評価）／基礎代謝 1,437kcal<br>
+          内臓脂肪レベル <span class="highlight">9</span>（標準だが上限ギリギリ）<br>
+          <b>→ 腹筋の土台は十分。あとは脂肪のフタを外すだけ</b>
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">🏁 ゴール</p>
+        <p class="rule-body-text">
+          体脂肪率 <span class="highlight">12〜13%</span>／内臓脂肪レベル 6〜7<br>
+          体重 <span class="highlight">60kg前後</span>（筋肉50kg維持・脂肪を3〜4kg減）<br>
+          期間の目安：<span class="highlight">4〜5ヶ月</span>（月0.7〜1kg減ペース）
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">🍽️ 食事（最重要・効果の8割）</p>
+        <p class="rule-body-text">
+          摂取目標 <span class="highlight">1,800kcal/日</span>（消費2,230に対し約400の赤字）<br>
+          内臓脂肪対策：糖質・酒・果糖（ジュース/菓子）を減らす<br>
+          糖質はトレ前後に寄せる（白米→玄米、夜は控えめ）
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">⚖️ PFCバランス（1,800kcal）</p>
+        <p class="rule-body-text">
+          <span class="highlight">P タンパク質 120g</span>（480kcal・約27%）← 絶対死守<br>
+          <span class="highlight">F 脂質 50g</span>（450kcal・約25%）← 減らしすぎ注意・質重視<br>
+          <span class="highlight">C 炭水化物 218g</span>（870kcal・約48%）← トレ前後に寄せる<br>
+          ※まずはP120gの達成だけ毎日チェック。1食30〜40gに分ける
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">💪 運動</p>
+        <p class="rule-body-text">
+          ① ジム週3は<b>重量キープのまま継続</b>（減量中の筋肉減を防ぐ）<br>
+          ② 早歩き20〜30分を上乗せ（ジム後 or 自重トレ日／空腹時が効率的）<br>
+          ③ 自重トレ（パターンD）は週2〜3、ジム以外の日に<br>
+          ④ アブローラー膝コロ 10×3＋プランク60秒×3 を週3
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">📅 月次マイルストーン</p>
+        <p class="rule-body-text">
+          現在：63.9kg / 17.6% … フラット<br>
+          1ヶ月後：63kg / 16% … 少し締まる<br>
+          2ヶ月後：62kg / 15% … 上部がうっすら<br>
+          3ヶ月後：61kg / 14% … 4つ見える<br>
+          <span class="highlight">4〜5ヶ月後：60kg / 12〜13% … シックスパック達成</span>
+        </p>
+      </div>
+
+      <div class="tip" style="margin-top:8px;">体脂肪率は男性で15%から割れ始め・12%ではっきり。筋肉は足りているので「絞る」一点集中でOK。</div>
     </div>
 
     <div id="analysis-content"></div>
@@ -1155,11 +1221,16 @@ function checkPromotions(exerciseData) {
 }
 
 // ===== 休憩タイマー =====
-let restTimerEnd = null, restTimerInt = null, audioCtx = null;
+let restTimerEnd = null, restTimerInt = null, audioCtx = null, pendingAlarm = false;
+
+function ensureAudio() {
+  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
+  if (audioCtx && audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch(e) {} }
+}
 
 function startRestTimer(sec) {
-  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
-  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  ensureAudio();
+  pendingAlarm = false;
   restTimerEnd = Date.now() + sec * 1000;
   clearInterval(restTimerInt);
   restTimerInt = setInterval(tickRestTimer, 250);
@@ -1168,13 +1239,15 @@ function startRestTimer(sec) {
 }
 
 function tickRestTimer() {
+  if (restTimerEnd === null) return;
   const badge = document.getElementById('rest-timer-badge');
   const remain = Math.ceil((restTimerEnd - Date.now()) / 1000);
   if (remain <= 0) {
     clearInterval(restTimerInt);
+    restTimerInt = null;
+    restTimerEnd = null;
     badge.textContent = '✅ 休憩終了！次のセットへ';
-    beep();
-    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+    fireAlarm();
     setTimeout(() => { badge.style.display = 'none'; }, 6000);
     return;
   }
@@ -1182,21 +1255,48 @@ function tickRestTimer() {
   badge.textContent = `⏱ ${m}:${String(s).padStart(2, '0')}（タップで中止）`;
 }
 
+// 終了音を鳴らす。バックグラウンド中は鳴らせないので保留し、復帰時に鳴らす
+function fireAlarm() {
+  if (document.hidden) { pendingAlarm = true; return; }
+  beep();
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+  pendingAlarm = false;
+}
+
+// 他アプリから戻ったとき：音声を復帰させ、タイマー状態を再評価
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  ensureAudio();
+  if (pendingAlarm) {
+    // resume() が効くまで少し待ってから鳴らす
+    setTimeout(() => { beep(); if (navigator.vibrate) navigator.vibrate([300,100,300]); pendingAlarm = false; }, 200);
+  } else if (restTimerEnd !== null) {
+    tickRestTimer();
+  }
+});
+window.addEventListener('focus', () => { ensureAudio(); if (restTimerEnd !== null) tickRestTimer(); });
+
 function cancelRestTimer() {
   clearInterval(restTimerInt);
+  restTimerInt = null;
+  restTimerEnd = null;
+  pendingAlarm = false;
   document.getElementById('rest-timer-badge').style.display = 'none';
 }
 
 function beep() {
+  ensureAudio();
   if (!audioCtx) return;
   try {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       const o = audioCtx.createOscillator(), g = audioCtx.createGain();
       o.connect(g); g.connect(audioCtx.destination);
+      o.type = 'square';            // 矩形波は同じ音量でも大きく聞こえる
       o.frequency.value = 880;
-      const t = audioCtx.currentTime + i * 0.35;
-      g.gain.setValueAtTime(0.4, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      const t = audioCtx.currentTime + i * 0.32;
+      g.gain.setValueAtTime(1.0, t);   // 最大音量
+      g.gain.setValueAtTime(1.0, t + 0.18);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
       o.start(t); o.stop(t + 0.3);
     }
   } catch(e) {}
