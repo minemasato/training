@@ -132,7 +132,9 @@
   .remove-set-btn { background: none; border: none; color: #ddd; font-size: 16px; cursor: pointer; padding: 0 4px; flex-shrink: 0; }
   .copy-set-btn { background: #f0f0f0; border: none; border-radius: 6px; color: #888; font-size: 11px; font-weight: 600; cursor: pointer; padding: 5px 7px; flex-shrink: 0; }
   .copy-set-btn:active { background: #e0e0e0; }
-  .prev-record { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: #999; margin: -2px 0 8px; }
+  .prev-record { margin: -2px 0 8px; }
+  .prev-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: #999; }
+  .prev-target { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #1D9E75; background: #eef6f2; border-radius: 6px; padding: 5px 9px; margin-bottom: 5px; }
   .prev-fill-btn { background: #eef6f2; border: none; border-radius: 6px; color: #1D9E75; font-size: 11px; font-weight: 600; padding: 5px 10px; cursor: pointer; flex-shrink: 0; }
   .prev-fill-btn:active { background: #dceee5; }
   #backup-banner { display: none; align-items: center; gap: 8px; background: #fff8e1; color: #8a6d3b; font-size: 12px; padding: 8px 14px; border-bottom: 1px solid #f0e6c8; }
@@ -1163,7 +1165,11 @@ function updatePrevRecord(blockId) {
   if (!last) { el.innerHTML = ''; return; }
   const setsStr = last.sets.map(s => `${s.weight > 0 ? s.weight : '自重'}×${s.reps}`).join(', ');
   const d = last.date.slice(5).replace('-', '/');
-  el.innerHTML = `<span>前回(${d}): ${setsStr}</span><button class="prev-fill-btn" onclick="fillFromLast(${blockId})">前回と同じ</button>`;
+  const target = getPromotionTarget(nameEl.value, last.sets);
+  const targetHtml = target
+    ? `<div class="prev-target">🎯 次回は <b>${target.target}kg</b> に挑戦！${target.caution ? '（腰の感覚を確認して）' : ''}</div>`
+    : '';
+  el.innerHTML = `${targetHtml}<div class="prev-line"><span>前回(${d}): ${setsStr}</span><button class="prev-fill-btn" onclick="fillFromLast(${blockId})">前回と同じ</button></div>`;
 }
 
 function updateAllPrevRecords() {
@@ -1204,18 +1210,27 @@ const PROMOTION_RULES = {
   'シーテッドロー（マシン）': { reps: 10, inc: 2.5 }
 };
 
+// 指定セットが昇格基準を満たすか判定し、次回の目標重量を返す（満たさなければnull）
+function getPromotionTarget(name, sets) {
+  const rule = PROMOTION_RULES[name];
+  if (!rule || !sets || sets.length === 0) return null;
+  const maxW = Math.max(...sets.map(s => s.weight));
+  if (maxW <= 0) return null; // 自重種目は対象外
+  const mainSets = sets.filter(s => s.weight === maxW);
+  if (mainSets.length >= 3 && mainSets.every(s => s.reps >= rule.reps)) {
+    return { current: maxW, target: maxW + rule.inc, reps: rule.reps, caution: !!rule.caution };
+  }
+  return null;
+}
+
 function checkPromotions(exerciseData) {
   const msgs = [];
   exerciseData.forEach(ex => {
-    const rule = PROMOTION_RULES[ex.name];
-    if (!rule || ex.sets.length === 0) return;
-    const maxW = Math.max(...ex.sets.map(s => s.weight));
-    const mainSets = ex.sets.filter(s => s.weight === maxW);
-    if (mainSets.length >= 3 && mainSets.every(s => s.reps >= rule.reps)) {
-      let m = `🎉 ${ex.name}: ${maxW}kg×${rule.reps}reps×3セット完遂！次回 ${maxW + rule.inc}kg に挑戦`;
-      if (rule.caution) m += '\n（翌日の腰の感覚も確認してから判断）';
-      msgs.push(m);
-    }
+    const p = getPromotionTarget(ex.name, ex.sets);
+    if (!p) return;
+    let m = `🎉 ${ex.name}: ${p.current}kg×${p.reps}reps×3セット完遂！次回 ${p.target}kg に挑戦`;
+    if (p.caution) m += '\n（翌日の腰の感覚も確認してから判断）';
+    msgs.push(m);
   });
   return msgs;
 }
