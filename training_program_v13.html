@@ -127,6 +127,10 @@
   .set-num-label { font-size: 12px; color: #aaa; flex: 0 0 40px; }
   .record-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 16px; text-align: center; width: 72px; background: #fafafa; color: #1a1a1a; -webkit-appearance: none; }
   .record-input:focus { outline: none; border-color: #c0392b; background: white; }
+  select.record-input.reel { -webkit-appearance: none; appearance: none; text-align: center; text-align-last: center; padding: 7px 6px; font-weight: 600; background-image: linear-gradient(45deg, transparent 50%, #bbb 50%), linear-gradient(135deg, #bbb 50%, transparent 50%); background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  .record-title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .input-mode-btn { background: #f4f6f6; border: 1px solid #e0e0e0; border-radius: 8px; color: #555; font-size: 12px; font-weight: 600; padding: 6px 10px; cursor: pointer; flex-shrink: 0; }
+  .input-mode-btn:active { background: #e5e9e9; }
   .record-unit { font-size: 12px; color: #999; }
   .add-set-btn { background: none; border: 1px dashed #ddd; border-radius: 8px; padding: 6px; font-size: 12px; color: #bbb; cursor: pointer; margin-top: 4px; width: 100%; }
   .remove-set-btn { background: none; border: none; color: #ddd; font-size: 16px; cursor: pointer; padding: 0 4px; flex-shrink: 0; }
@@ -239,6 +243,10 @@
   .record-ex-select { flex: 1; border: 1px solid #e5e5e5; border-radius: 8px; padding: 8px 10px; font-size: 14px; background: #fafafa; color: #1a1a1a; font-family: inherit; -webkit-appearance: none; }
   .record-ex-select:focus { outline: none; border-color: #c0392b; background: white; }
   .remove-ex-btn { background: none; border: none; color: #ddd; font-size: 20px; cursor: pointer; flex-shrink: 0; padding: 0 4px; line-height: 1; }
+  .ex-detail-btn { background: #f4f6f6; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 15px; cursor: pointer; flex-shrink: 0; padding: 7px 9px; line-height: 1; }
+  .ex-detail-btn:active { background: #e5e9e9; }
+  .card.flash { animation: cardflash 1.6s ease; }
+  @keyframes cardflash { 0%,100% { box-shadow: 0 1px 3px rgba(0,0,0,0.07); } 20%,60% { box-shadow: 0 0 0 3px #c0392b; } }
 </style>
 </head>
 <body>
@@ -743,7 +751,10 @@
     </div>
     <input type="hidden" id="selected-pattern" value="A">
 
-    <p class="section-title">種目の記録</p>
+    <div class="record-title-row">
+      <p class="section-title" style="margin:0;">種目の記録</p>
+      <button id="input-mode-btn" class="input-mode-btn" onclick="toggleInputMode()">⌨ 手入力に切替</button>
+    </div>
     <div id="exercise-records"></div>
 
     <button class="add-exercise-btn" onclick="addExerciseBlock()">＋ 種目を追加</button>
@@ -969,6 +980,86 @@ function toggleRules(btn) { btn.classList.toggle('open'); btn.nextElementSibling
 // ===== 記録ページ =====
 let exBlockCount = 0;
 
+// ===== 数値入力モード（リール / 手入力） =====
+let inputMode = 'reel';
+try { inputMode = localStorage.getItem('training_input_mode') || 'reel'; } catch(e) {}
+let WEIGHT_OPTS = '', REPS_OPTS = '';
+function buildReelOptions() {
+  let w = '<option value="">—</option><option value="0">自重</option>';
+  for (let v = 0.5; v <= 130.0001; v += 0.5) {
+    const s = Math.round(v * 10) / 10;
+    w += `<option value="${s}">${s}</option>`;
+  }
+  WEIGHT_OPTS = w;
+  let r = '<option value="">—</option>';
+  for (let i = 1; i <= 40; i++) r += `<option value="${i}">${i}</option>`;
+  REPS_OPTS = r;
+}
+buildReelOptions();
+
+// セット行の重量・回数フィールドHTML（モードで切替）
+function makeSetFields() {
+  if (inputMode === 'reel') {
+    return `<select class="record-input reel set-w">${WEIGHT_OPTS}</select>
+      <span class="record-unit">kg ×</span>
+      <select class="record-input reel set-r">${REPS_OPTS}</select>
+      <span class="record-unit">reps</span>`;
+  }
+  return `<input class="record-input set-w" type="number" inputmode="decimal" enterkeyhint="next" placeholder="重量" step="0.5" min="0">
+      <span class="record-unit">kg ×</span>
+      <input class="record-input set-r" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
+      <span class="record-unit">reps</span>`;
+}
+
+// 行から[重量要素, 回数要素]を取得（input/select両対応）
+function getSetInputs(row) {
+  return [row.querySelector('.set-w'), row.querySelector('.set-r')];
+}
+// 値をセット（selectで端数など選択肢にない値はオプションを追加して対応）
+function setSetValue(el, val) {
+  if (!el) return;
+  if (el.tagName === 'SELECT') {
+    if (val === '' || val == null) { el.value = ''; return; }
+    const v = String(val);
+    if (![...el.options].some(o => o.value === v)) {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = (v === '0' ? '自重' : v);
+      el.appendChild(o);
+    }
+    el.value = v;
+  } else {
+    el.value = (val == null ? '' : val);
+  }
+}
+
+function toggleInputMode() {
+  inputMode = (inputMode === 'reel') ? 'keypad' : 'reel';
+  try { localStorage.setItem('training_input_mode', inputMode); } catch(e) {}
+  reRenderInputs();
+  updateModeButton();
+}
+function updateModeButton() {
+  const btn = document.getElementById('input-mode-btn');
+  if (btn) btn.textContent = (inputMode === 'reel') ? '⌨ 手入力に切替' : '🎡 リールに切替';
+}
+// 既存の入力値を保ったまま、全種目のセット行をモードに合わせて作り直す
+function reRenderInputs() {
+  document.querySelectorAll('.record-exercise').forEach(exEl => {
+    const blockId = exEl.id.replace('ex-block-', '');
+    const setsEl = document.getElementById('sets-' + blockId);
+    const rows = [...setsEl.querySelectorAll('.record-set-row')];
+    const vals = rows.map(row => { const [w, r] = getSetInputs(row); return [w ? w.value : '', r ? r.value : '']; });
+    const n = Math.max(vals.length, 1);
+    setsEl.innerHTML = Array.from({ length: n }, (_, i) => makeSetRow(blockId, i)).join('');
+    const newRows = [...setsEl.querySelectorAll('.record-set-row')];
+    newRows.forEach((row, i) => {
+      if (!vals[i]) return;
+      const [w, r] = getSetInputs(row);
+      setSetValue(w, vals[i][0]); setSetValue(r, vals[i][1]);
+    });
+  });
+}
+
 function initRecordPage() {
   if (loadDraft()) return;
   const today = new Date().toISOString().slice(0,10);
@@ -992,8 +1083,8 @@ function collectExercises() {
     const name = nameEl ? nameEl.value : '';
     const sets = [];
     exEl.querySelectorAll('.record-set-row').forEach(row => {
-      const inputs = row.querySelectorAll('input[type="number"]');
-      sets.push({ weight: inputs[0].value, reps: inputs[1].value });
+      const [w, r] = getSetInputs(row);
+      sets.push({ weight: w ? w.value : '', reps: r ? r.value : '' });
     });
     exercises.push({ name, sets });
   });
@@ -1030,9 +1121,9 @@ function renderExercisesFromData(exercises, pattern) {
     const rows = document.querySelectorAll('#sets-' + id + ' .record-set-row');
     ex.sets.forEach((s, idx) => {
       if (!rows[idx]) return;
-      const inputs = rows[idx].querySelectorAll('input[type="number"]');
-      if (inputs[0]) inputs[0].value = s.weight || '';
-      if (inputs[1]) inputs[1].value = s.reps || '';
+      const [w, r] = getSetInputs(rows[idx]);
+      setSetValue(w, s.weight || '');
+      setSetValue(r, s.reps || '');
     });
   });
   updateAllPrevRecords();
@@ -1085,6 +1176,7 @@ function makeExBlock(name, blockId, removable) {
     <div class="record-exercise" id="ex-block-${blockId}">
       <div class="record-ex-header">
         ${makeExSelect(blockId, name)}
+        <button class="ex-detail-btn" onclick="goToProgramDetail(${blockId})" title="プログラムの詳細を見る">📋</button>
         ${removable ? `<button class="remove-ex-btn" onclick="removeExBlock(${blockId})">×</button>` : ''}
       </div>
       <div class="prev-record" id="prev-${blockId}"></div>
@@ -1120,16 +1212,42 @@ function removeExBlock(blockId) {
   if (el) el.remove();
 }
 
+// 記録ページの種目から、プログラムの該当種目カードへ飛ぶ
+function goToProgramDetail(blockId) {
+  const sel = document.getElementById('ex-name-' + blockId);
+  if (!sel) return;
+  const name = sel.value;
+  let target = null;
+  document.querySelectorAll('#page-program .card-name').forEach(el => {
+    if (el.textContent.trim() === name) target = el;
+  });
+  if (!target) {
+    alert(`「${name}」の詳細はプログラムページにありません。\n（代替種目や追加した種目の可能性があります）`);
+    return;
+  }
+  const content = target.closest('.program-content');
+  const patName = content.id.replace('pat-', '');
+  // プログラムタブへ切替
+  showPage('program', document.querySelectorAll('.nav-tab')[0]);
+  // 該当パターンへ切替
+  const patIndex = { smith: 0, dumbbell: 1, machine: 2, home: 3 }[patName];
+  showPattern(patName, document.querySelectorAll('.pat-btn')[patIndex]);
+  // カードまでスクロール＋ハイライト
+  const card = target.closest('.card');
+  setTimeout(() => {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.add('flash');
+    setTimeout(() => card.classList.remove('flash'), 1600);
+  }, 80);
+}
+
 function makeSetRow(blockId, setIdx) {
   return `
     <div class="record-set-row">
       <span class="set-num-label">セット${setIdx+1}</span>
-      <input class="record-input" type="number" inputmode="decimal" enterkeyhint="next" placeholder="重量" step="0.5" min="0">
-      <span class="record-unit">kg ×</span>
-      <input class="record-input" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
-      <span class="record-unit">reps</span>
+      ${makeSetFields()}
       ${setIdx >= 1 ? `<button class="copy-set-btn" onclick="copyPrevSet(this)">↑同</button>` : ''}
-      ${setIdx >= 3 ? `<button class="remove-set-btn" onclick="removeSet(this)">×</button>` : ''}
+      ${setIdx >= 1 ? `<button class="remove-set-btn" onclick="removeSet(this)">×</button>` : ''}
     </div>`;
 }
 
@@ -1137,10 +1255,10 @@ function copyPrevSet(btn) {
   const row = btn.closest('.record-set-row');
   const prev = row.previousElementSibling;
   if (!prev || !prev.classList.contains('record-set-row')) return;
-  const prevInputs = prev.querySelectorAll('input[type="number"]');
-  const curInputs = row.querySelectorAll('input[type="number"]');
-  curInputs[0].value = prevInputs[0].value;
-  curInputs[1].value = prevInputs[1].value;
+  const [pw, pr] = getSetInputs(prev);
+  const [cw, cr] = getSetInputs(row);
+  setSetValue(cw, pw ? pw.value : '');
+  setSetValue(cr, pr ? pr.value : '');
   saveDraft();
 }
 
@@ -1233,8 +1351,14 @@ function checkPromotions(exerciseData) {
 }
 
 // ===== 休憩タイマー =====
+// 設計方針：
+//  ・鳴らす「時刻」は必ず実時計(Date.now())で判定する（iOSでも正確）
+//  ・カウント中は無音のキープアライブ音でAudioContextを起こし続け、
+//    前面表示中に音声機能がスリープして「鳴らない/遅れる」のを防ぐ
+//  ・バックグラウンドで終了した場合は復帰した瞬間に鳴らす
 let restTimerEnd = null, restTimerInt = null, audioCtx = null;
-let pendingAlarm = false, scheduledOsc = [], scheduledOk = false;
+let pendingAlarm = false, keepAlive = null;
+const BEEP_GAIN = 0.3; // 音量（さらに1段下げた）
 
 function ensureAudio() {
   try {
@@ -1244,45 +1368,50 @@ function ensureAudio() {
     if (audioCtx.state !== 'running') audioCtx.resume().catch(() => {});
   } catch(e) {}
 }
-// 画面をタップするたびに音声を有効化しておく（iOSの無音化対策）
 document.addEventListener('touchstart', ensureAudio, { passive: true });
 document.addEventListener('click', ensureAudio);
 
-// 単発ビープ4連（gain=音量）を「基準時刻」から鳴らす。基準省略なら即時
-function beepFrom(startTime) {
-  if (!audioCtx || audioCtx.state !== 'running') return false;
-  const base = (startTime != null) ? startTime : audioCtx.currentTime;
+// 無音のキープアライブ（コンテキストを起こし続けてスリープを防ぐ）
+function startKeepAlive() {
+  if (!audioCtx || keepAlive) return;
   try {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    g.gain.value = 0.0001; // 実質無音
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    keepAlive = { o, g };
+  } catch(e) {}
+}
+function stopKeepAlive() {
+  if (keepAlive) { try { keepAlive.o.stop(); } catch(e) {} keepAlive = null; }
+}
+
+// 終了音（4連ビープ）を今すぐ鳴らす。鳴らせたらtrue
+function beepNow() {
+  ensureAudio();
+  if (!audioCtx || audioCtx.state !== 'running') return false;
+  try {
+    const base = audioCtx.currentTime;
     for (let i = 0; i < 4; i++) {
       const o = audioCtx.createOscillator(), g = audioCtx.createGain();
       o.connect(g); g.connect(audioCtx.destination);
       o.type = 'square';
       o.frequency.value = 880;
       const t = base + i * 0.32;
-      g.gain.setValueAtTime(0.5, t);
-      g.gain.setValueAtTime(0.5, t + 0.18);
+      g.gain.setValueAtTime(BEEP_GAIN, t);
+      g.gain.setValueAtTime(BEEP_GAIN, t + 0.18);
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
       o.start(t); o.stop(t + 0.3);
-      scheduledOsc.push(o);
     }
     return true;
   } catch(e) { return false; }
 }
 
-function clearScheduled() {
-  scheduledOsc.forEach(o => { try { o.stop(); } catch(e) {} });
-  scheduledOsc = [];
-}
-
 function startRestTimer(sec) {
   ensureAudio();
+  startKeepAlive();
   pendingAlarm = false;
-  clearScheduled();
   restTimerEnd = Date.now() + sec * 1000;
-  // ★重要：ボタンを押した瞬間（＝音声が確実に有効）に、終了音を
-  //   オーディオクロック上へ予約する。JSタイマーの遅延やiOSの
-  //   suspend/resume競合の影響を受けず、時間ちょうどに鳴る。
-  scheduledOk = beepFrom(audioCtx ? audioCtx.currentTime + sec : null);
   clearInterval(restTimerInt);
   restTimerInt = setInterval(tickRestTimer, 250);
   document.getElementById('rest-timer-badge').style.display = 'block';
@@ -1291,6 +1420,8 @@ function startRestTimer(sec) {
 
 function tickRestTimer() {
   if (restTimerEnd === null) return;
+  // カウント中も念のため音声を起こし続ける
+  if (audioCtx && audioCtx.state !== 'running') audioCtx.resume().catch(() => {});
   const badge = document.getElementById('rest-timer-badge');
   const remain = Math.ceil((restTimerEnd - Date.now()) / 1000);
   if (remain <= 0) {
@@ -1298,15 +1429,8 @@ function tickRestTimer() {
     restTimerInt = null;
     restTimerEnd = null;
     badge.textContent = '✅ 休憩終了！次のセットへ';
-    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-    // 予約が効いていれば音は既に鳴る。予約できなかった場合のみ即時に鳴らす。
-    // バックグラウンドで終了した場合は予約音が鳴らないので復帰時に鳴らす。
-    if (document.hidden) {
-      pendingAlarm = true;
-    } else if (!scheduledOk) {
-      ensureAudio();
-      if (!beepFrom()) pendingAlarm = true; // まだ有効化前なら復帰/タップ時に
-    }
+    fireAlarm();
+    stopKeepAlive();
     setTimeout(() => { badge.style.display = 'none'; }, 6000);
     return;
   }
@@ -1314,24 +1438,34 @@ function tickRestTimer() {
   badge.textContent = `⏱ ${m}:${String(s).padStart(2, '0')}（タップで中止）`;
 }
 
-// 他アプリから戻ったとき：音声を復帰し、鳴らし損ねた終了音があれば鳴らす
+function fireAlarm() {
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+  // バックグラウンド中／音声がまだ起きていない場合は保留し、復帰・タップ時に鳴らす
+  if (document.hidden || !beepNow()) pendingAlarm = true;
+  else pendingAlarm = false;
+}
+
+// 他アプリから戻ったとき：音声を復帰し、タイマーを再評価。鳴らし損ねがあれば鳴らす
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) return;
   ensureAudio();
+  if (restTimerEnd !== null) tickRestTimer();
   if (pendingAlarm) {
-    setTimeout(() => { if (beepFrom()) { if (navigator.vibrate) navigator.vibrate([300,100,300]); pendingAlarm = false; } }, 250);
-  } else if (restTimerEnd !== null) {
-    tickRestTimer();
+    setTimeout(() => { if (beepNow()) { if (navigator.vibrate) navigator.vibrate([300,100,300]); pendingAlarm = false; } }, 200);
   }
 });
-window.addEventListener('focus', () => { ensureAudio(); if (restTimerEnd !== null) tickRestTimer(); });
+window.addEventListener('focus', () => {
+  ensureAudio();
+  if (restTimerEnd !== null) tickRestTimer();
+  if (pendingAlarm) setTimeout(() => { if (beepNow()) pendingAlarm = false; }, 200);
+});
 
 function cancelRestTimer() {
   clearInterval(restTimerInt);
   restTimerInt = null;
   restTimerEnd = null;
   pendingAlarm = false;
-  clearScheduled(); // 予約済みの終了音も取り消す
+  stopKeepAlive();
   document.getElementById('rest-timer-badge').style.display = 'none';
 }
 
@@ -1351,16 +1485,7 @@ function addSet(blockId) {
   const container = document.getElementById('sets-' + blockId);
   const count = container.querySelectorAll('.record-set-row').length;
   const div = document.createElement('div');
-  div.innerHTML = `
-    <div class="record-set-row">
-      <span class="set-num-label">セット${count+1}</span>
-      <input class="record-input" type="number" inputmode="decimal" enterkeyhint="next" placeholder="重量" step="0.5" min="0">
-      <span class="record-unit">kg ×</span>
-      <input class="record-input" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
-      <span class="record-unit">reps</span>
-      <button class="copy-set-btn" onclick="copyPrevSet(this)">↑同</button>
-      <button class="remove-set-btn" onclick="removeSet(this)">×</button>
-    </div>`;
+  div.innerHTML = makeSetRow(blockId, count);
   container.appendChild(div.firstElementChild);
 }
 
@@ -1378,10 +1503,10 @@ function saveRecord() {
     const name = nameEl ? nameEl.value : '';
     const sets = [];
     exEl.querySelectorAll('.record-set-row').forEach(row => {
-      const inputs = row.querySelectorAll('input[type="number"]');
-      const wRaw = parseFloat(inputs[0].value);
+      const [wEl, rEl] = getSetInputs(row);
+      const wRaw = parseFloat(wEl ? wEl.value : '');
       const weight = isNaN(wRaw) ? 0 : wRaw; // 空欄・0は自重として扱う
-      const reps = parseInt(inputs[1].value);
+      const reps = parseInt(rEl ? rEl.value : '');
       if (!isNaN(reps) && reps > 0) {
         sets.push({ weight, reps });
       }
@@ -1395,6 +1520,13 @@ function saveRecord() {
 
   const dateStr = `${date.slice(0,4)}年${parseInt(date.slice(5,7))}月${parseInt(date.slice(8,10))}日`;
   if (!confirm(`${dateStr}（${pattern}パターン）の記録として保存します。よろしいですか？`)) return;
+
+  // 当日と違う日付なら2段階目の確認（入力ミス・日付変更忘れ防止）
+  const today = new Date().toISOString().slice(0,10);
+  if (date !== today) {
+    const todayStr = `${today.slice(0,4)}年${parseInt(today.slice(5,7))}月${parseInt(today.slice(8,10))}日`;
+    if (!confirm(`⚠️ 本日（${todayStr}）ではありません。\n\n「${dateStr}」の記録として保存しますが、日付は合っていますか？`)) return;
+  }
 
   const records = getRecords();
   const existingIdx = records.findIndex(r => r.date === date);
@@ -1834,6 +1966,7 @@ function parseCSVLine(line) {
 // ===== 初期化 =====
 document.addEventListener('DOMContentLoaded', () => {
   initRecordPage();
+  updateModeButton();
   checkBackupReminder();
   const recordPage = document.getElementById('page-record');
   const handler = () => saveDraft();
@@ -1852,13 +1985,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = inputs.indexOf(e.target);
       if (idx >= 0 && idx < inputs.length - 1) {
         inputs[idx + 1].focus();
-        inputs[idx + 1].select();
+        if (typeof inputs[idx + 1].select === 'function') inputs[idx + 1].select();
       }
     }
   });
 
   document.addEventListener('focusin', (e) => {
-    if (e.target.matches('.record-input')) {
+    if (e.target.matches('.record-input') && typeof e.target.select === 'function') {
       e.target.select();
     }
   });
