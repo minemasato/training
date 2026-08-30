@@ -123,9 +123,9 @@
   .record-exercise { background: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
   .record-ex-name { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #1a1a1a; }
   .record-sets { display: flex; flex-direction: column; gap: 6px; }
-  .record-set-row { display: flex; align-items: center; gap: 8px; }
+  .record-set-row { display: flex; align-items: center; gap: 6px; }
   .set-num-label { font-size: 12px; color: #aaa; flex: 0 0 40px; }
-  .record-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 16px; text-align: center; width: 72px; background: #fafafa; color: #1a1a1a; -webkit-appearance: none; }
+  .record-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 8px; font-size: 16px; text-align: center; width: 66px; background: #fafafa; color: #1a1a1a; -webkit-appearance: none; flex-shrink: 0; }
   .record-input:focus { outline: none; border-color: #c0392b; background: white; }
   select.record-input.reel { -webkit-appearance: none; appearance: none; text-align: center; text-align-last: center; padding: 7px 6px; font-weight: 600; background-image: linear-gradient(45deg, transparent 50%, #bbb 50%), linear-gradient(135deg, #bbb 50%, transparent 50%); background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
   .record-title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -136,6 +136,8 @@
   .remove-set-btn { background: none; border: none; color: #ddd; font-size: 16px; cursor: pointer; padding: 0 4px; flex-shrink: 0; }
   .copy-set-btn { background: #f0f0f0; border: none; border-radius: 6px; color: #888; font-size: 11px; font-weight: 600; cursor: pointer; padding: 5px 7px; flex-shrink: 0; }
   .copy-set-btn:active { background: #e0e0e0; }
+  .clear-set-btn { background: none; border: none; color: #ccc; font-size: 14px; cursor: pointer; padding: 3px 2px; flex-shrink: 0; line-height: 1; }
+  .clear-set-btn:active { color: #c0392b; }
   .prev-record { margin: -2px 0 8px; }
   .prev-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: #999; }
   .prev-target { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #1D9E75; background: #eef6f2; border-radius: 6px; padding: 5px 9px; margin-bottom: 5px; }
@@ -1002,13 +1004,11 @@ function makeSetFields() {
   if (inputMode === 'reel') {
     return `<select class="record-input reel set-w">${WEIGHT_OPTS}</select>
       <span class="record-unit">kg ×</span>
-      <select class="record-input reel set-r">${REPS_OPTS}</select>
-      <span class="record-unit">reps</span>`;
+      <select class="record-input reel set-r">${REPS_OPTS}</select>`;
   }
   return `<input class="record-input set-w" type="number" inputmode="decimal" enterkeyhint="next" placeholder="重量" step="0.5" min="0">
       <span class="record-unit">kg ×</span>
-      <input class="record-input set-r" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">
-      <span class="record-unit">reps</span>`;
+      <input class="record-input set-r" type="number" inputmode="numeric" enterkeyhint="next" placeholder="回数" min="0">`;
 }
 
 // 行から[重量要素, 回数要素]を取得（input/select両対応）
@@ -1246,9 +1246,19 @@ function makeSetRow(blockId, setIdx) {
     <div class="record-set-row">
       <span class="set-num-label">セット${setIdx+1}</span>
       ${makeSetFields()}
+      <button class="clear-set-btn" onclick="clearSetRow(this)" title="この行の数値をクリア">⌫</button>
       ${setIdx >= 1 ? `<button class="copy-set-btn" onclick="copyPrevSet(this)">↑同</button>` : ''}
       ${setIdx >= 1 ? `<button class="remove-set-btn" onclick="removeSet(this)">×</button>` : ''}
     </div>`;
+}
+
+// その行の重量・回数を空欄に戻す
+function clearSetRow(btn) {
+  const row = btn.closest('.record-set-row');
+  const [w, r] = getSetInputs(row);
+  setSetValue(w, '');
+  setSetValue(r, '');
+  saveDraft();
 }
 
 function copyPrevSet(btn) {
