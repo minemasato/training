@@ -27,6 +27,9 @@
   .pattern-bar { display: flex; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 49px; z-index: 198; }
   .pat-btn { flex: 1; padding: 10px 4px; font-size: 13px; font-weight: 600; color: #888; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; }
   .pat-btn.active { color: #c0392b; border-bottom-color: #c0392b; }
+  .pattern-bar-2 { top: 90px; z-index: 197; background: #fbfaf8; align-items: center; }
+  .pattern-bar-2 .pat-btn { font-size: 12px; padding: 8px 2px; }
+  .plan-tag { flex: 0 0 auto; font-size: 10px; font-weight: 700; color: #b8a88a; padding: 0 6px 0 10px; letter-spacing: 0.5px; }
 
   .program-content { display: none; padding: 12px 16px 80px; max-width: 600px; margin: 0 auto; }
   .program-content.active { display: block; }
@@ -152,8 +155,11 @@
   .timer-chip:active { background: #f0f0f0; }
   #rest-timer-badge { position: sticky; top: 104px; z-index: 150; background: #1a1a1a; color: white; border-radius: 12px; padding: 12px 16px; font-size: 16px; font-weight: 700; text-align: center; display: none; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
 
-  .pattern-select-row { display: flex; gap: 8px; margin-bottom: 14px; }
-  .pattern-select-btn { flex: 1; padding: 8px 4px; font-size: 13px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
+  .pattern-select-row { display: flex; gap: 6px; margin-bottom: 14px; }
+  .pattern-select-row-2 { align-items: center; margin-top: -8px; }
+  .pattern-select-row-2 .pattern-select-btn { font-size: 11px; padding: 7px 2px; }
+  .plan-tag-inline { flex: 0 0 auto; font-size: 10px; font-weight: 700; color: #b8a88a; letter-spacing: 0.5px; }
+  .pattern-select-btn { flex: 1; padding: 8px 3px; font-size: 12px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
   .pattern-select-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
 
   .note-area { width: 100%; border: 1px solid #e5e5e5; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: #333; background: white; resize: none; height: 70px; font-family: inherit; }
@@ -173,6 +179,11 @@
   .pat-b { background: #dbeafe; color: #1d4ed8; }
   .pat-c { background: #d1fae5; color: #065f46; }
   .pat-d { background: #ede9fe; color: #5b21b6; }
+  .pat-mon { background: #ffe4e6; color: #9f1239; }
+  .pat-tue { background: #e0f2fe; color: #075985; }
+  .pat-wed { background: #fef9c3; color: #854d0e; }
+  .pat-thu { background: #dcfce7; color: #166534; }
+  .pat-fri { background: #f3e8ff; color: #6b21a8; }
   .history-exercises { font-size: 12px; color: #888; line-height: 1.6; }
   .history-detail { display: none; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
   .history-detail.open { display: block; }
@@ -186,8 +197,8 @@
   .edit-date-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .edit-date-label { font-size: 12px; color: #666; flex-shrink: 0; }
   .edit-date-input { border: 1px solid #e5e5e5; border-radius: 8px; padding: 6px 10px; font-size: 13px; background: #fafafa; color: #1a1a1a; }
-  .edit-pat-row { display: flex; gap: 6px; margin-bottom: 10px; }
-  .edit-pat-btn { flex: 1; padding: 6px 4px; font-size: 12px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
+  .edit-pat-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .edit-pat-btn { flex: 1 0 16%; padding: 6px 4px; font-size: 12px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
   .edit-pat-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
   .edit-ex-block { background: #fafafa; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid #eee; }
   .edit-ex-name { width: 100%; border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 13px; background: white; color: #1a1a1a; font-family: inherit; margin-bottom: 8px; }
@@ -273,10 +284,18 @@
 <!-- ===== プログラムページ ===== -->
 <div id="page-program" class="page active">
   <div class="pattern-bar">
-    <button class="pat-btn active" onclick="showPattern('smith', this)">A｜スミスマシン</button>
-    <button class="pat-btn" onclick="showPattern('dumbbell', this)">B｜ダンベル</button>
-    <button class="pat-btn" onclick="showPattern('machine', this)">C｜マシン</button>
-    <button class="pat-btn" onclick="showPattern('home', this)">D｜自宅</button>
+    <button class="pat-btn active" data-pat="smith" onclick="showPattern('smith', this)">A｜スミスマシン</button>
+    <button class="pat-btn" data-pat="dumbbell" onclick="showPattern('dumbbell', this)">B｜ダンベル</button>
+    <button class="pat-btn" data-pat="machine" onclick="showPattern('machine', this)">C｜マシン</button>
+    <button class="pat-btn" data-pat="home" onclick="showPattern('home', this)">D｜自宅</button>
+  </div>
+  <div class="pattern-bar pattern-bar-2">
+    <span class="plan-tag">週5</span>
+    <button class="pat-btn" data-pat="mon" onclick="showPattern('mon', this)">月｜脚肩</button>
+    <button class="pat-btn" data-pat="tue" onclick="showPattern('tue', this)">火｜胸背</button>
+    <button class="pat-btn" data-pat="wed" onclick="showPattern('wed', this)">水｜肩</button>
+    <button class="pat-btn" data-pat="thu" onclick="showPattern('thu', this)">木｜後鎖</button>
+    <button class="pat-btn" data-pat="fri" onclick="showPattern('fri', this)">金｜胸背</button>
   </div>
 
   <!-- パターンA -->
@@ -725,6 +744,437 @@
     </div>
     </div>
   </div>
+
+  <!-- ========== 週5プラン：月｜脚 ========== -->
+  <div id="pat-mon" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">脚（膝主導）＋肩の日</span><span class="time-badge">30〜35分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <div class="tip" style="margin:0 0 10px;">週5プランの1日目。種目数が少ないぶん<span class="highlight">ウォームアップは省略しない</span>こと。</div>
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">スミスマシン スクワット</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　47kg×12×3達成（8/16）。安定したら49.5kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：スミスマシンが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">レッグプレス（マシン）を先に→この日は2種目入れ替え</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">やること</div><div class="alt-cell-value">順番を入れ替える</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">重量・回数</div><div class="alt-cell-value">変更なし</div></div>
+        </div>
+        <p class="alt-name" style="margin-top:10px;">両方使えない時：ブルガリアンスクワット（ダンベル）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">3kg × 10</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">8kg（片手）</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3（片側）</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※ダンベルさえあればできるので、混雑日の最終手段。前足カカト重心・上体は軽い前傾まで</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">レッグプレス（マシン）</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>40kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　81kg×12×3達成（8/14）。膝が内側に入らないよう注意。安定したら85kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：レッグプレスが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ブルガリアンスクワット（ダンベル）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">3kg × 10</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">8kg（片手）</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3（片側）</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※ダンベルも取れない場合は自重で20reps×3。木曜にもブルガリアンがあるので、その週は木曜をグルートブリッジに替えると重複を避けられます</p>
+      </div>
+    </div>
+
+    <p class="section-title">補助種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">サイドレイズ</span><span class="badge badge-shoulder">肩</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1分　💡 水曜と合わせて<span class="highlight">週2回</span>を確保するための追加（週3プランと同じ頻度）。脚と肩は干渉しないので、脚トレの後でも影響なし。所要は約6分</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：8kgダンベルが取れない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">重量を下げてレップで稼ぐ</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">6〜7kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">15reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">テンポ</div><div class="alt-cell-value">下ろし3秒でゆっくり</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1分</div></div>
+        </div>
+        <p class="alt-note-text">※時間が押している日はこの種目を飛ばしてOK（水曜で最低限は確保できています）</p>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    </div>
+  </div>
+
+  <!-- ========== 週5プラン：火｜胸＋背 ========== -->
+  <div id="pat-tue" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">胸＋背中（押す・引く）の日</span><span class="time-badge">25〜30分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <div class="tip" style="margin:0 0 10px;">拮抗する筋肉なので、時間がない日は<span class="highlight">2種目を交互（スーパーセット）</span>にすると更に短縮できます。</div>
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ベンチプレス</span><span class="badge badge-chest">胸・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　⭐ 週5プランの利点：この日の1種目目なので<span class="highlight">一番元気な状態</span>で入れる。3セット目10repsの突破が狙える。10×3が揃ったら55kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ベンチ台・スミスマシンが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">チェストプレス（マシン）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">45kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※金曜もチェストプレスなので、火曜に使った週は<span class="highlight">金曜をプッシュアップバー腕立て（自重20reps×3）</span>に替えると刺激が変わって良い</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ダンベルローイング</span><span class="badge badge-back">広背筋・僧帽筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>8kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　20kg×12×3が揃ったら22kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ダンベルスペースが混んでいる場合</button>
+      <div class="alt-body">
+        <p class="alt-name">シーテッドロー（マシン）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">55kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">8〜10reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-name" style="margin-top:10px;">それも使用中：ラットプルダウン</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">45kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">8〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※金曜と重複しても問題なし（中2日空くため）。背中は引く方向が変わるだけで十分効きます</p>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    </div>
+  </div>
+
+  <!-- ========== 週5プラン：水｜肩 ========== -->
+  <div id="pat-wed" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">肩の日（一番短い日）</span><span class="time-badge">20〜25分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <div class="tip" style="margin:0 0 10px;">週の真ん中の<span class="highlight">軽い日</span>。大きい関節を使わないので、前後の脚・胸背の回復を邪魔しません。</div>
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ショルダープレス（マシン）</span><span class="badge badge-shoulder">肩・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　3セット目が落ちるうちは30kg継続。30kg×10×3が安定したら32.5kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ショルダープレスが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">パイクプッシュアップ（自重）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">腕回し・肩ほぐし</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン</div><div class="alt-cell-value">自重</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※お尻を高く上げ、頭を斜め前に下ろす。器具ゼロでできるので混雑日に強い。パターンDでも使っている慣れた種目</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">サイドレイズ</span><span class="badge badge-shoulder">肩</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1分　8kg×10×3が合格ライン。<span class="highlight">月曜と合わせて週2回</span>（週3プランと同じ頻度）。肩側部は回復が遅いので焦らない。最終セットが苦しければ7kgにドロップ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：8kgダンベルが取れない場合</button>
+      <div class="alt-body">
+        <p class="alt-name">重量を下げてレップで稼ぐ</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">6〜7kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">15reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">テンポ</div><div class="alt-cell-value">下ろし3秒でゆっくり</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1分</div></div>
+        </div>
+        <p class="alt-note-text">※サイドレイズは軽い重量でも「効かせ方」で強度を作れる種目。空いている重量で回数とテンポを上げれば十分</p>
+      </div>
+    </div>
+
+    <div class="tip" style="margin:0 0 8px;">時間が余ったら：アブローラー膝コロ 10回×3、プランク60秒×3（腹筋の仕上げ）</div>
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    </div>
+  </div>
+
+  <!-- ========== 週5プラン：木｜後鎖 ========== -->
+  <div id="pat-thu" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">後鎖（腰・臀部）の日</span><span class="time-badge">30〜35分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <div class="tip" style="margin:0 0 10px;">⚠️ <span class="highlight">この日だけは急がない</span>。デッドリフトは休憩2〜3分が必要。時間が足りない日はデッドリフトのみに絞ってOK。</div>
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">デッドリフト（バーベル）</span><span class="badge badge-back">背中・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ①</span></td></tr>
+          <tr class="row-warm"><td>2</td><td>30kg</td><td>5reps</td><td><span class="tag tag-warm">ウォームアップ②</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 2〜3分　⚠️ 47kg＝1月に負傷した重量。ここで完全に定着させること。昇格条件は「3セット完遂＋翌日の腰の感覚OK」の両方。48kg以降は1kg刻みで。<span class="highlight">短時間セッションでも休憩とウォームアップは絶対に削らない</span></p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：バーベル・スペースが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ダンベルデッドリフト</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">4kg × 10</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">8kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">12〜15reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-name" style="margin-top:10px;">腰が不安な日・器具が空かない日：グルートブリッジ（自重）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">メイン</div><div class="alt-cell-value">自重</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">15reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">ポイント</div><div class="alt-cell-value">トップで2秒キープ</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1分</div></div>
+        </div>
+        <p class="alt-note-text">※腰への負荷がほぼゼロ。<span class="highlight">待ってまでデッドリフトをやる必要はありません</span>。この日の目的は臀部・後鎖なので、代替でも十分成立します</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ブルガリアンスクワット</span><span class="badge badge-leg">脚・臀部</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>3kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　前足カカト重心・上体は軽い前傾まで。腰に違和感が出たら即中止（デッドリフトの後なので特に注意）</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ダンベル・ベンチ台が使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">グルートブリッジ（自重）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">メイン</div><div class="alt-cell-value">自重</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">15reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">ポイント</div><div class="alt-cell-value">「お尻で持ち上げる」</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1分</div></div>
+        </div>
+        <p class="alt-name" style="margin-top:10px;">脚をもっと使いたい時：レッグプレス（マシン）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">40kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">81kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※月曜にもレッグプレスがあるため、中2日空いているこの日なら重複しても問題なし</p>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    </div>
+  </div>
+
+  <!-- ========== 週5プラン：金｜胸＋背 ========== -->
+  <div id="pat-fri" class="program-content">
+    <div style="padding:12px 16px 0;"><div class="pattern-header"><span class="pattern-desc">胸＋背中（マシン中心）の日</span><span class="time-badge">30〜35分</span></div></div>
+    <div style="padding:0 16px 80px;">
+    <div class="tip" style="margin:0 0 10px;">週5の中で唯一の<span class="highlight">3種目の日</span>。火曜から中2日空いているので胸・背中とも回復済み。</div>
+    <p class="section-title">メイン種目</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">チェストプレス（マシン）</span><span class="badge badge-chest">胸・三頭筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　シート高さは毎回同じ設定（グリップが胸の高さ）。45kg×12×3が作れたら47.5kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：チェストプレスが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ベンチプレス</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">52.5kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">8〜10reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-name" style="margin-top:10px;">どちらも使用中：プッシュアップバー腕立て伏せ</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">メイン</div><div class="alt-cell-value">自重</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">15〜20reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">ポイント</div><div class="alt-cell-value">下ろし3秒でゆっくり</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※火曜のベンチから中2日空いているので、金曜にベンチを使っても回復上は問題ありません</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ラットプルダウン（マシン）</span><span class="badge badge-back">広背筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。フォームが崩れる時は40kgに戻してOK。45kg×10×3がきれいに揃ったら47kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ラットプルダウンが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">もう一方のラットプルダウン</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">45kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">8〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-name" style="margin-top:10px;">どちらも使用中：ダンベルローイング</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">8kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">20kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※火曜のダンベルローイングと重複しますが、中2日空くので問題なし</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">シーテッドロー（マシン）</span><span class="badge badge-back">広背筋・僧帽筋</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：メインセット間 1〜2分　フォームが崩れる時は50kgに戻してOK。55kg×10×3が安定したら57.5kgへ</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：シーテッドローが使用中の場合</button>
+      <div class="alt-body">
+        <p class="alt-name">ダンベルローイング</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">8kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">20kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※この日は3種目あるので、時間が押していれば<span class="highlight">この種目を丸ごと飛ばしてOK</span>。ラットプルダウンで背中は確保できています</p>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetChecks(this)">↺ チェックをリセット</button>
+    <div class="rules-section">
+      <button class="rules-toggle" onclick="toggleRules(this)">週5プランの進め方・週3に戻す方法</button>
+      <div class="rules-body">
+        <div style="height:8px;"></div>
+        <div class="rule-card"><p class="rule-title">週5プランの狙い</p><p class="rule-body-text">1回あたりの種目数を減らして、往復・シャワー込みで<span class="highlight">50〜60分</span>に収めるための分散です。<b>重量・セット数は一切落としません。</b><br>週の合計は12種目スロット（月3・火2・水2・木2・金3）で、週3プランと同等です。</p></div>
+        <div class="rule-card"><p class="rule-title">回復の間隔（設計済み）</p><p class="rule-body-text">胸：火・金＝中2日／背中：火・金＝中2日／脚：月・木＝中2日（膝主導とヒンジで別系統）／<span class="highlight">肩（サイドレイズ）：月・水＝中2日</span>／腰：木のみ・週1<br>この並びを崩さなければ、同じ部位に中2〜3日のルールが自動的に守られます。</p></div>
+        <div class="rule-card"><p class="rule-title">週3から変わる点（把握しておく）</p><p class="rule-body-text"><b>サイドレイズ</b>：月・水で<span class="highlight">週2回を維持</span>（週3プランと同じ）。伸びの遅い種目なので頻度を落とさない<br><b>背中</b>：週4スロット→<span class="highlight">3スロット</span>にやや減。ただし背中は直近2ヶ月で最も伸びた部位（シーテッドロー35→55kg）で、胸(2スロット)より多いため配分としては適正。<b>停滞したら火曜にラットプルダウンを足す</b></p></div>
+        <div class="rule-card"><p class="rule-title">行けない日があったら</p><p class="rule-body-text">その週は<span class="highlight">諦めて翌週へ持ち越さない</span>。週5なら1回抜けても20%減で済みます（週3だと33%減）。頻度が高いぶん、1回の欠席に強いのが週5の隠れた利点です。</p></div>
+        <div class="rule-card"><p class="rule-title">短時間でも削ってはいけないもの</p>
+          <div style="margin-top:4px;">
+            <div class="step-row"><span class="step-num">1</span><span class="step-text">各日1種目目のウォームアップ（特に月のスクワット・木のデッドリフト）</span></div>
+            <div class="step-row"><span class="step-num">2</span><span class="step-text">デッドリフトの休憩2〜3分</span></div>
+            <div class="step-row"><span class="step-num">3</span><span class="step-text">メインセットの重量・セット数</span></div>
+          </div>
+        </div>
+        <div class="rule-card"><p class="rule-title">器具が空いていない時の考え方</p><p class="rule-body-text">各種目カードの「<span class="highlight">⇄ 代替</span>」を開けば、その場で選べる代替が出ます。<b>待つより代替に切り替える</b>のが週5の鉄則です（1回25〜35分の枠が崩れるため）。<br>代替で他の曜日と種目が重複しても、この並びなら<span class="highlight">中2日以上空く</span>ので問題ありません。記録するときはプルダウンで実際にやった種目を選べば、履歴も正しく残ります。</p></div>
+        <div class="rule-card"><p class="rule-title">週3プランに戻したくなったら</p><p class="rule-body-text">上のタブから<span class="highlight">A・B・C・Dを選ぶだけ</span>でいつでも戻せます。週3プランはそのまま残してあるので、設定し直す必要はありません。記録も両方のプランが同じ履歴に貯まります。<br>「週5はしんどい」と感じたら、<span class="highlight">週4（月・火・木・金）</span>にして水曜の肩を火曜か金曜に足す形も有効です。</p></div>
+        <div class="tip">まずは2〜3週間試してみて、続けやすさと疲労感で判断してください。</div>
+      </div>
+    </div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== 記録ページ ===== -->
@@ -746,10 +1196,18 @@
 
     <p class="section-title">パターン</p>
     <div class="pattern-select-row">
-      <button class="pattern-select-btn active" onclick="selectPattern(this,'A')">A｜スミスマシン</button>
-      <button class="pattern-select-btn" onclick="selectPattern(this,'B')">B｜ダンベル</button>
-      <button class="pattern-select-btn" onclick="selectPattern(this,'C')">C｜マシン</button>
-      <button class="pattern-select-btn" onclick="selectPattern(this,'D')">D｜自宅</button>
+      <button class="pattern-select-btn active" data-pat="A" onclick="selectPattern(this,'A')">A｜スミス</button>
+      <button class="pattern-select-btn" data-pat="B" onclick="selectPattern(this,'B')">B｜ダンベル</button>
+      <button class="pattern-select-btn" data-pat="C" onclick="selectPattern(this,'C')">C｜マシン</button>
+      <button class="pattern-select-btn" data-pat="D" onclick="selectPattern(this,'D')">D｜自宅</button>
+    </div>
+    <div class="pattern-select-row pattern-select-row-2">
+      <span class="plan-tag-inline">週5</span>
+      <button class="pattern-select-btn" data-pat="月" onclick="selectPattern(this,'月')">月｜脚肩</button>
+      <button class="pattern-select-btn" data-pat="火" onclick="selectPattern(this,'火')">火｜胸背</button>
+      <button class="pattern-select-btn" data-pat="水" onclick="selectPattern(this,'水')">水｜肩</button>
+      <button class="pattern-select-btn" data-pat="木" onclick="selectPattern(this,'木')">木｜後鎖</button>
+      <button class="pattern-select-btn" data-pat="金" onclick="selectPattern(this,'金')">金｜胸背</button>
     </div>
     <input type="hidden" id="selected-pattern" value="A">
 
@@ -907,8 +1365,24 @@ const EXERCISES = {
   A: ['スミスマシン スクワット','デッドリフト（バーベル）','ラットプルダウン','サイドレイズ'],
   B: ['ベンチプレス','ダンベルローイング','レッグプレス（マシン）','サイドレイズ'],
   C: ['チェストプレス（マシン）','ラットプルダウン（マシン）','ショルダープレス（マシン）','シーテッドロー（マシン）'],
-  D: ['プッシュアップバー腕立て伏せ','ブルガリアンスクワット（自重）','グルートブリッジ','パイクプッシュアップ','アブローラー（膝コロ）']
+  D: ['プッシュアップバー腕立て伏せ','ブルガリアンスクワット（自重）','グルートブリッジ','パイクプッシュアップ','アブローラー（膝コロ）'],
+  // 週5プラン（1回25〜35分・昼休みに収める用）
+  月: ['スミスマシン スクワット','レッグプレス（マシン）','サイドレイズ'],
+  火: ['ベンチプレス','ダンベルローイング'],
+  水: ['ショルダープレス（マシン）','サイドレイズ'],
+  木: ['デッドリフト（バーベル）','ブルガリアンスクワット'],
+  金: ['チェストプレス（マシン）','ラットプルダウン（マシン）','シーテッドロー（マシン）']
 };
+
+// 履歴バッジ用のラベル・配色クラス
+const PAT_LABEL = { A:'パターンA', B:'パターンB', C:'パターンC', D:'パターンD',
+  月:'月｜脚肩', 火:'火｜胸背', 水:'水｜肩', 木:'木｜後鎖', 金:'金｜胸背' };
+const PAT_CLASS = { A:'pat-a', B:'pat-b', C:'pat-c', D:'pat-d',
+  月:'pat-mon', 火:'pat-tue', 水:'pat-wed', 木:'pat-thu', 金:'pat-fri' };
+const ALL_PATTERNS = ['A','B','C','D','月','火','水','木','金'];
+// 記録パターン → プログラムページのID対応
+const PATTERN_TO_PAGE = { A:'smith', B:'dumbbell', C:'machine', D:'home',
+  月:'mon', 火:'tue', 水:'wed', 木:'thu', 金:'fri' };
 
 // 全種目リスト（代替含む）
 const ALL_EXERCISES = [
@@ -1138,8 +1612,9 @@ function loadDraft() {
   document.getElementById('record-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('record-note').value = patData.note || '';
   document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
-  const patIdx = {A:0, B:1, C:2, D:3}[pattern] || 0;
-  document.querySelectorAll('.pattern-select-btn')[patIdx].classList.add('active');
+  const patBtn = document.querySelector(`.pattern-select-btn[data-pat="${pattern}"]`)
+    || document.querySelector('.pattern-select-btn');
+  patBtn.classList.add('active');
   document.getElementById('selected-pattern').value = pattern;
   renderExercisesFromData(patData.exercises, pattern);
   return true;
@@ -1217,10 +1692,19 @@ function goToProgramDetail(blockId) {
   const sel = document.getElementById('ex-name-' + blockId);
   if (!sel) return;
   const name = sel.value;
-  let target = null;
-  document.querySelectorAll('#page-program .card-name').forEach(el => {
-    if (el.textContent.trim() === name) target = el;
-  });
+  // 同じ種目が週3・週5の両プランに存在するため、今記録中のパターンの
+  // ページを優先して探し、なければ全体から探す
+  const curPat = document.getElementById('selected-pattern').value;
+  const scopeId = PATTERN_TO_PAGE[curPat];
+  const findIn = (root) => {
+    let hit = null;
+    root.querySelectorAll('.card-name').forEach(el => {
+      if (!hit && el.textContent.trim() === name) hit = el;
+    });
+    return hit;
+  };
+  const scope = scopeId && document.getElementById('pat-' + scopeId);
+  let target = (scope && findIn(scope)) || findIn(document.getElementById('page-program'));
   if (!target) {
     alert(`「${name}」の詳細はプログラムページにありません。\n（代替種目や追加した種目の可能性があります）`);
     return;
@@ -1230,8 +1714,7 @@ function goToProgramDetail(blockId) {
   // プログラムタブへ切替
   showPage('program', document.querySelectorAll('.nav-tab')[0]);
   // 該当パターンへ切替
-  const patIndex = { smith: 0, dumbbell: 1, machine: 2, home: 3 }[patName];
-  showPattern(patName, document.querySelectorAll('.pat-btn')[patIndex]);
+  showPattern(patName, document.querySelector(`.pat-btn[data-pat="${patName}"]`));
   // カードまでスクロール＋ハイライト
   const card = target.closest('.card');
   setTimeout(() => {
@@ -1565,7 +2048,8 @@ function renderHistory() {
   }
   container.innerHTML = records.map((r, idx) => {
     const exNames = r.exercises.map(e => e.name).join('・');
-    const patClass = `pat-${r.pattern.toLowerCase()}`;
+    const patClass = PAT_CLASS[r.pattern] || 'pat-a';
+    const patLabel = PAT_LABEL[r.pattern] || `パターン${r.pattern}`;
     const detail = r.exercises.map(e => {
       const setStr = e.sets.map((s,i) => `セット${i+1}: ${s.weight > 0 ? s.weight + 'kg' : '自重'} × ${s.reps}reps`).join('、');
       return `<div class="detail-ex"><div class="detail-ex-name">${e.name}</div><div class="detail-sets">${setStr}</div></div>`;
@@ -1575,7 +2059,7 @@ function renderHistory() {
         <div class="history-summary" onclick="toggleDetail(this.closest('.history-item'))">
           <div class="history-item-header">
             <span class="history-date">${r.date}</span>
-            <span class="history-pattern ${patClass}">パターン${r.pattern}</span>
+            <span class="history-pattern ${patClass}">${patLabel}</span>
           </div>
           <div class="history-exercises">${exNames}</div>
         </div>
@@ -1612,7 +2096,7 @@ function showEditForm(btn, date) {
   const r = records.find(x => x.date === date);
   if (!r) return;
   const detail = btn.closest('.history-detail');
-  const patBtns = ['A','B','C','D'].map(p =>
+  const patBtns = ALL_PATTERNS.map(p =>
     `<button class="edit-pat-btn${r.pattern === p ? ' active' : ''}" onclick="this.closest('.edit-pat-row').querySelectorAll('.edit-pat-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${p}</button>`
   ).join('');
   const exBlocks = r.exercises.map((e, ei) => {
