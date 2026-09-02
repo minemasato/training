@@ -153,6 +153,7 @@
   .timer-row { display: flex; gap: 8px; margin-bottom: 14px; position: sticky; top: 56px; z-index: 150; background: #f5f5f0; padding: 8px 0; }
   .timer-chip { flex: 1; padding: 9px 0; border: 1px solid #e0e0e0; border-radius: 8px; background: white; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; }
   .timer-chip:active { background: #f0f0f0; }
+  .timer-test { flex: 0 0 44px; font-size: 15px; }
   #rest-timer-badge { position: sticky; top: 104px; z-index: 150; background: #1a1a1a; color: white; border-radius: 12px; padding: 12px 16px; font-size: 16px; font-weight: 700; text-align: center; display: none; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
 
   .pattern-select-row { display: flex; gap: 6px; margin-bottom: 14px; }
@@ -1191,6 +1192,7 @@
       <button class="timer-chip" onclick="startRestTimer(90)">1:30</button>
       <button class="timer-chip" onclick="startRestTimer(120)">2:00</button>
       <button class="timer-chip" onclick="startRestTimer(180)">3:00</button>
+      <button class="timer-chip timer-test" onclick="testBeep()" title="音が鳴るか確認">🔊</button>
     </div>
     <div id="rest-timer-badge" onclick="cancelRestTimer()"></div>
 
@@ -1862,7 +1864,26 @@ let keepAlive = null;
 // ★ Web Audio のみを使う。<audio>要素での再生はiOSでオーディオセッションを
 //   奪ってしまい、バックグラウンド再生中の音楽を止めるため使わない。
 //   Web Audio は他アプリの音とミックスされるので音楽は止まらない。
+
+// ★ iOS 16.4+ の Audio Session API。
+//   'transient' ＝「短い通知音を鳴らす」宣言。他アプリの音楽を一瞬だけ小さくして
+//   ビープを鳴らし、すぐ元に戻す。これを宣言しないと、音楽再生中に
+//   こちらの音が鳴らないことがある（今回の不具合の原因）。
+function setAudioSessionType(type) {
+  try {
+    if (navigator.audioSession && navigator.audioSession.type !== type) {
+      navigator.audioSession.type = type;
+    }
+  } catch(e) {}
+}
+function audioDiagnostics() {
+  let sess = 'なし';
+  try { if (navigator.audioSession) sess = navigator.audioSession.type || '不明'; } catch(e) {}
+  return { ctx: audioCtx ? audioCtx.state : 'null', session: sess };
+}
+
 function ensureAudio() {
+  setAudioSessionType('transient');
   try {
     if (!audioCtx || audioCtx.state === 'closed') {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1907,18 +1928,34 @@ function stopKeepAlive() {
 
 // 終了音（4連ビープ）。鳴らせたらtrue、鳴らせなければfalse（＝保留して後で再試行）
 function beepNow() {
+  setAudioSessionType('transient');
   ensureAudio();
   if (!audioCtx) return false;
   if (audioCtx.state === 'running') return scheduleBeeps();
-  // 中断中：resumeを試み、間に合えば鳴らす
+
+  // 中断中（音楽再生中に起きやすい）：resume→ダメならContextを作り直して再試行
   try {
     audioCtx.resume().then(() => {
       if (audioCtx && audioCtx.state === 'running' && scheduleBeeps()) {
-        pendingAlarm = null; // 非同期で鳴らせたら保留を解除（二重鳴り防止）
+        pendingAlarm = null;
+      } else {
+        rebuildAndBeep();
       }
-    }).catch(() => {});
-  } catch(e) {}
+    }).catch(() => rebuildAndBeep());
+  } catch(e) { rebuildAndBeep(); }
   return false;
+}
+
+// 中断から戻らない場合の最終手段：AudioContextを作り直して鳴らす
+function rebuildAndBeep() {
+  try {
+    if (audioCtx) { try { audioCtx.close(); } catch(e) {} }
+    keepAlive = null;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const go = () => { if (scheduleBeeps()) pendingAlarm = null; };
+    if (audioCtx.state === 'running') go();
+    else audioCtx.resume().then(go).catch(() => {});
+  } catch(e) {}
 }
 
 function scheduleBeeps() {
@@ -2009,6 +2046,22 @@ window.addEventListener('pageshow', () => {
   if (restTimerEnd !== null) { startKeepAlive(); tickRestTimer(); }
   flushPendingAlarm();
 });
+
+// 音が鳴るかその場で確認する（音楽再生中・スリープ後などの切り分け用）
+function testBeep() {
+  const badge = document.getElementById('rest-timer-badge');
+  setAudioSessionType('transient');
+  ensureAudio();
+  const ok = beepNow();
+  const d = audioDiagnostics();
+  badge.style.display = 'block';
+  badge.textContent = ok
+    ? '🔊 テスト音を再生しました'
+    : `⚠️ 再生できず再試行中（音声:${d.ctx} / session:${d.session}）`;
+  setTimeout(() => {
+    if (restTimerEnd === null) badge.style.display = 'none';
+  }, 4000);
+}
 
 function cancelRestTimer() {
   clearInterval(restTimerInt);
