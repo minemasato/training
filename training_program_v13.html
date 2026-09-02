@@ -1856,7 +1856,10 @@ function checkPromotions(exerciseData) {
 //    前面表示中に音声機能がスリープして「鳴らない/遅れる」のを防ぐ
 //  ・バックグラウンドで終了した場合は復帰した瞬間に鳴らす
 let restTimerEnd = null, restTimerInt = null, audioCtx = null;
-let pendingAlarm = false;
+// pendingAlarm は「鳴らし損ねた時刻」。null＝保留なし。
+// 有効期限を過ぎたものは鳴らさず破棄する（後からタップした時に突然鳴るのを防ぐ）
+let pendingAlarm = null;
+const PENDING_ALARM_MAX_AGE = 90 * 1000; // 90秒。これを過ぎた終了音はもう不要
 const BEEP_GAIN = 0.3; // Web Audio側の音量（<audio>は波形に焼き込み済み）
 const beepEl = () => document.getElementById('beep-el');
 const silenceEl = () => document.getElementById('silence-el');
@@ -1864,6 +1867,23 @@ const silenceEl = () => document.getElementById('silence-el');
 // --- 音声の有効化・復帰 ---------------------------------------------------
 // iOSでは他アプリの再生・画面ロック・通話などで音声が止まる。
 // 主経路は<audio>要素（中断に強い）、副経路にWeb Audioを残す。
+
+// 解錠は必ず muted で行う（ここで音を出すとタップの度にビープが漏れる）
+function unlockEl(el) {
+  if (!el || el.dataset.unlocked) return;
+  const wasMuted = el.muted;
+  el.muted = true;
+  const p = el.play();
+  if (p && p.then) {
+    p.then(() => {
+      el.pause(); el.currentTime = 0;
+      el.muted = wasMuted; el.dataset.unlocked = '1';
+    }).catch(() => { el.muted = wasMuted; });
+  } else {
+    el.pause(); el.currentTime = 0; el.muted = wasMuted; el.dataset.unlocked = '1';
+  }
+}
+
 function ensureAudio() {
   // Web Audio（副経路）。interrupted/suspendedのまま戻らない時は作り直す
   try {
@@ -1879,11 +1899,9 @@ function ensureAudio() {
       }, 400);
     }
   } catch(e) {}
-  // <audio>（主経路）をユーザー操作のうちに解錠しておく
-  const b = beepEl();
-  if (b && !b.dataset.unlocked) {
-    b.play().then(() => { b.pause(); b.currentTime = 0; b.dataset.unlocked = '1'; }).catch(() => {});
-  }
+  // <audio>（主経路）をユーザー操作のうちに解錠しておく（無音で）
+  unlockEl(beepEl());
+  unlockEl(silenceEl());
 }
 document.addEventListener('touchstart', () => { ensureAudio(); flushPendingAlarm(); }, { passive: true });
 document.addEventListener('click', () => { ensureAudio(); flushPendingAlarm(); });
@@ -1907,6 +1925,7 @@ function beepNow() {
   const b = beepEl();
   if (b) {
     try {
+      b.muted = false; // 解錠処理でmutedのまま残った場合の保険
       b.currentTime = 0;
       const p = b.play();
       if (p && p.catch) p.catch(() => { beepWebAudio(); });
@@ -1941,7 +1960,7 @@ function beepWebAudio() {
 function startRestTimer(sec) {
   ensureAudio();
   startKeepAlive();
-  pendingAlarm = false;
+  pendingAlarm = null;
   restTimerEnd = Date.now() + sec * 1000;
   clearInterval(restTimerInt);
   restTimerInt = setInterval(tickRestTimer, 250);
@@ -1974,20 +1993,19 @@ function tickRestTimer() {
 function fireAlarm() {
   if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
   // 画面が見えていない時は鳴らせないことがあるので保留し、復帰時に鳴らす
-  if (document.hidden || !beepNow()) pendingAlarm = true;
-  else pendingAlarm = false;
+  pendingAlarm = (document.hidden || !beepNow()) ? Date.now() : null;
 }
 
-// 鳴らし損ねた終了音を、復帰・タップのタイミングで鳴らす
+// 鳴らし損ねた終了音を、復帰・タップのタイミングで鳴らす。
+// ・古すぎる保留（90秒超）は鳴らさず破棄 → 後からタブを触って突然鳴るのを防ぐ
+// ・先に保留を解除してから鳴らす → 連続タップで多重に鳴るのを防ぐ
 function flushPendingAlarm() {
-  if (!pendingAlarm || document.hidden) return;
-  setTimeout(() => {
-    if (!pendingAlarm) return;
-    if (beepNow()) {
-      if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-      pendingAlarm = false;
-    }
-  }, 200);
+  if (!pendingAlarm) return;
+  if (Date.now() - pendingAlarm > PENDING_ALARM_MAX_AGE) { pendingAlarm = null; return; }
+  if (document.hidden) return;
+  pendingAlarm = null;
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+  beepNow();
 }
 
 // 他アプリから戻った／画面ロック解除／再表示
@@ -2012,7 +2030,7 @@ function cancelRestTimer() {
   clearInterval(restTimerInt);
   restTimerInt = null;
   restTimerEnd = null;
-  pendingAlarm = false;
+  pendingAlarm = null;
   stopKeepAlive();
   document.getElementById('rest-timer-badge').style.display = 'none';
 }
