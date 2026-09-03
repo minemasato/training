@@ -66,6 +66,9 @@
   .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 6px; }
   .tag-warm { background: #f0f0f0; color: #888; }
   .tag-main { background: #fee2e2; color: #b91c1c; }
+  .tag-top { background: #1a1a1a; color: #fff; font-weight: 700; }
+  .row-main.row-top td { font-weight: 700; }
+  .row-main.set-done .tag-top { background: #065f46; }
   .rest-note { font-size: 11px; color: #aaa; padding: 7px 14px 2px; }
 
   /* 完了チェック */
@@ -316,13 +319,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>57kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　47kg×12×3達成（8/16）。安定したら49.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ57kgで6〜8回（限界1〜2回手前）→52kgで10〜12回×2。<span class="highlight">最終セットは回数を決めず限界まで</span>。トップが8回に達したら次の重量へ</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
       <div class="alt-body">
         <p class="alt-name">ブルガリアンスクワット（ダンベル）</p>
@@ -342,13 +345,13 @@
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ①</span></td></tr>
           <tr class="row-warm"><td>2</td><td>30kg</td><td>5reps</td><td><span class="tag tag-warm">ウォームアップ②</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>52kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 2〜3分　⚠️ ついに47kg＝1月に負傷した重量に到達（8/10・8/16）。痛みなく扱えているが、ここで完全に定着させること。昇格条件は「3セット完遂＋翌日の腰の感覚OK」の両方。48kg以降は1kg刻みで慎重に。腰の状態が悪い日はスクワットのみでOK</p>
+      <p class="rest-note">休憩：メインセット間 2〜3分　🛑<span class="highlight">この種目だけトップセットを作らない</span>。1月に負傷した47kgを超えて52kgに到達した直後のため、低回数高重量は最もリスクが高い。52kgで10reps×2が痛みなく揃うまで上げないこと。以降は1kg刻み。翌日の腰の感覚も昇格条件に含める</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
       <div class="alt-body">
         <p class="alt-name">ダンベルデッドリフト</p>
@@ -369,13 +372,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>47kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。45kgへ昇格。8/7・8/14に45kgでフォームが崩れて40kgに戻した経緯あり。数字より「丁寧に引く」優先。45kg×10×3がきれいに揃ったら47kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ47kg×6〜8→45kg×10〜12×2。肘を引き下ろす意識で。<span class="highlight">フォームが崩れたらその時点で終了</span>（重量より丁寧さ優先）</p>
     </div>
 
     <div class="card">
@@ -384,13 +387,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1分　8kgへ昇格（8/12〜）。まず8〜10repsで定着。肩側部は回復が遅いので焦らず、8kg×10×3が安定したら次へ。最終セットが苦しければ7kgにドロップも有効</p>
+      <p class="rest-note">休憩：メインセット間 1分　9kgで8〜10回×3。小さい筋肉なのでトップセットは不要。<span class="highlight">最終セットだけ限界まで</span>（回数を決めない）。9ヶ月で5→9kgと+80%、伸びている種目です</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：時間が足りない場合</button>
       <div class="alt-body">
         <p class="alt-name">ショルダープレスマシン</p>
@@ -408,7 +411,17 @@
       <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール・スケジュール</button>
       <div class="rules-body">
         <div style="height:8px;"></div>
-        <div class="rule-card"><p class="rule-title">重量の上げ方</p><p class="rule-body-text">メイン3セット全て規定レップ数・きれいなフォームでクリア → 次回<span class="highlight">+2.5kg</span><br>1セットでも未達成なら同じ重量を継続</p></div>
+        <div class="rule-card"><p class="rule-title">重量の上げ方（2026-09改定）</p><p class="rule-body-text">
+          <b>① 昇格の判定はトップセットで行う</b><br>
+          トップセットが<span class="highlight">8回</span>できたら次回+2.5kg（マシンは+5kg）。<b>バックオフの12回×3は待たない</b><br>
+          <b>② 最終セットは回数を決めず限界まで</b><br>
+          「12回で止める」のをやめる。出た回数をそのまま記録する<br>
+          <span style="color:#c0392b;">※デッドリフトだけは例外。トップセットを作らず52kgで定着させる</span>
+        </p></div>
+        <div class="rule-card"><p class="rule-title">なぜ変えたのか（記録の分析結果）</p><p class="rule-body-text">
+          9ヶ月分を集計したところ、<span class="highlight">ワークセットの79%が「12,12,12」のように全て同じ回数</span>＝限界まで追い込めていませんでした。またレップ帯の<span class="highlight">82%が9〜12回</span>に集中し、6〜8回の重い刺激がほぼ皆無でした。<br>
+          そこで<b>各種目の1セット目だけ重くする（トップセット）</b>方式に変更。時間は増やさず、足りていなかった「高重量」と「限界までの追い込み」を補います。
+        </p></div>
         <div class="rule-card"><p class="rule-title">週のスケジュール</p><p class="rule-body-text">同じパターンの連続はNG。同じ部位に<span class="highlight">中2〜3日</span>空けること。</p>
           <p style="font-size:11px;color:#aaa;margin:10px 0 5px;">週2回の例（月・木）</p>
           <div class="schedule-row"><div class="day-cell day-a"><div class="day-label">月</div><div class="day-content">A</div></div><div class="day-cell day-rest"><div class="day-label">火</div><div class="day-content">休</div></div><div class="day-cell day-rest"><div class="day-label">水</div><div class="day-content">休</div></div><div class="day-cell day-b"><div class="day-label">木</div><div class="day-content">B</div></div><div class="day-cell day-rest"><div class="day-label">金</div><div class="day-content">休</div></div><div class="day-cell day-rest"><div class="day-label">土</div><div class="day-content">休</div></div><div class="day-cell day-rest"><div class="day-label">日</div><div class="day-content">休</div></div></div>
@@ -441,13 +454,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>57.5kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　できれば最初に。現在52.5kgで1・2セット目は10reps安定、3セット目が課題（6→8と改善中）。3セット目の前だけ休憩を2〜3分に延ばす／レストポーズで10repを狙う。10×3が揃ったら55kgへ。胸系種目（チェストプレス含む）とは中2〜3日空ける</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ57.5kgで6〜8回→<span class="highlight">55kgで8〜10回×2</span>（今の重量のまま。トップ後なので体感はいつもよりキツいはず）。最終セットは限界まで。トップが8回でクリアしたら60kgへ。胸系種目とは中2〜3日空ける</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：スミスマシンが使えない場合</button>
       <div class="alt-body">
         <p class="alt-name">チェストプレスマシン</p>
@@ -467,13 +480,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>8kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>24kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>22kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>22kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　20kgへ昇格（12reps安定）。20kg×12×3が揃ったら22kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ24kg×6〜8→22kg×10〜12×2。<span class="highlight">最終セットは限界まで</span></p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ダンベルスペースが混んでいる場合</button>
       <div class="alt-body">
         <p class="alt-name">シーテッドローマシン</p>
@@ -494,13 +507,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>40kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>90kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>85.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>85.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　81kg×12×3達成（8/14）。伸びが速いのでフォーム（膝の向き・可動域）を崩さない範囲で。安定したら85kgへ。腰痛時は軽めに</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ90kg×6〜8→85.5kg×10〜12×2。⚠️3ヶ月で+25.5kgと伸びが速いので<span class="highlight">可動域が浅くなっていないか毎回確認</span>。膝が内側に入らないよう注意</p>
     </div>
 
     <div class="card">
@@ -515,7 +528,7 @@
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　7→8kgへ昇格（腰の違和感も解消）。ダンベルスペースが空いているときに。腰が不安な日は避ける</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　8kgで10〜12回×3。前足カカト重心・上体は軽い前傾まで。腰に違和感が出たら即中止。<span class="highlight">最終セットは限界まで</span></p>
     </div>
 
     <div class="card">
@@ -539,13 +552,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1分　8kgへ昇格（8/12〜）。まず8〜10repsで定着。肩側部は回復が遅いので焦らず、8kg×10×3が安定したら次へ。最終セットが苦しければ7kgにドロップも有効</p>
+      <p class="rest-note">休憩：メインセット間 1分　9kgで8〜10回×3。小さい筋肉なのでトップセットは不要。<span class="highlight">最終セットだけ限界まで</span>（回数を決めない）。9ヶ月で5→9kgと+80%、伸びている種目です</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：時間が足りない場合</button>
       <div class="alt-body">
         <p class="alt-name">ショルダープレスマシン</p>
@@ -563,7 +576,11 @@
       <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール・スケジュール</button>
       <div class="rules-body">
         <div style="height:8px;"></div>
-        <div class="rule-card"><p class="rule-title">重量の上げ方</p><p class="rule-body-text">メイン3セット全て規定レップ数・きれいなフォームでクリア → 次回<span class="highlight">+2.5kg</span></p></div>
+        <div class="rule-card"><p class="rule-title">重量の上げ方（2026-09改定）</p><p class="rule-body-text">
+          <b>トップセットが8回できたら次回+2.5kg</b>（マシンは+5kg）。バックオフの12回×3は待たない<br>
+          <b>最終セットは回数を決めず限界まで</b>。出た回数をそのまま記録する<br>
+          <span style="color:#c0392b;">※デッドリフトのみ例外。52kgで定着を優先</span>
+        </p></div>
         <div class="rule-card"><p class="rule-title">バーベルデッドリフトへの戻し方</p><p class="rule-body-text">ダンベルデッドリフトが<span class="highlight">8〜9kg×12reps</span>余裕でこなせたら、バーベルを32〜35kgから再スタート</p></div>
         <div class="tip">「全セット、最後まできれいに動かせる重量」が正しい設定。</div>
       </div>
@@ -583,13 +600,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>50kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　45kgへ昇格（8/14に45×12,12,10）。シート高さは毎回同じ設定（グリップが胸の高さ）。45kg×12×3が作れたら47.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐45kg×12×3を達成済みのためトップ50kg×6〜8を追加。シート高さは毎回同じ設定。<span class="highlight">最終セットは限界まで</span></p>
     </div>
 
     <div class="card">
@@ -598,13 +615,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>47kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。41×12×3達成で43kgへ昇格。43kg×12reps×3が揃ったら45kgへ（今度は正攻法で届く）</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ47kg×6〜8→45kg×10〜12×2。肘を引き下ろす意識で。<span class="highlight">フォームが崩れたらその時点で終了</span></p>
     </div>
 
     <p class="section-title">補助種目</p>
@@ -615,13 +632,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>32.5kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　30kgへ昇格（8/7〜）。3セット目が落ちるうちは30kg継続。30kg×10×3が安定したら32.5kgへ。サイドレイズの代替としても機能する</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ32.5kg×6〜8→30kg×10〜12×2。<span class="highlight">最終セットは限界まで</span>。20kgまで落として再構築した種目なので数字より軌道優先</p>
     </div>
 
     <div class="card">
@@ -630,13 +647,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>60kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　55kgへ昇格（2ヶ月で+20kg）。フォームが崩れる時は50kgに戻してOK。55kg×10×3が安定したら57.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ60kg×6〜8→55kg×10〜12×2。<span class="highlight">最終セットは限界まで</span>。引けなくなったら重量を戻してOK</p>
     </div>
 
     <div class="tip" style="margin:0 0 8px;">腰にほぼ負担がかかりません。腰の調子が悪い日に積極的に選んでOK。</div>
@@ -645,7 +662,11 @@
       <button class="rules-toggle" onclick="toggleRules(this)">進め方のルール・スケジュール</button>
       <div class="rules-body">
         <div style="height:8px;"></div>
-        <div class="rule-card"><p class="rule-title">重量の上げ方</p><p class="rule-body-text">メイン3セット全て規定レップ数・きれいなフォームでクリア → 次回<span class="highlight">+2.5kg</span></p></div>
+        <div class="rule-card"><p class="rule-title">重量の上げ方（2026-09改定）</p><p class="rule-body-text">
+          <b>トップセットが8回できたら次回+2.5kg</b>（マシンは+5kg）。バックオフの12回×3は待たない<br>
+          <b>最終セットは回数を決めず限界まで</b>。出た回数をそのまま記録する<br>
+          <span style="color:#c0392b;">※デッドリフトのみ例外。52kgで定着を優先</span>
+        </p></div>
         <div class="tip">「全セット、最後まできれいに動かせる重量」が正しい設定。</div>
       </div>
     </div>
@@ -764,13 +785,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>47kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>57kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　47kg×12×3達成（8/16）。安定したら49.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ57kgで6〜8回（限界1〜2回手前）→52kgで10〜12回×2。<span class="highlight">最終セットは回数を決めず限界まで</span>。トップが8回に達したら次の重量へ</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：スミスマシンが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">レッグプレス（マシン）を先に→この日は2種目入れ替え</p>
@@ -795,13 +816,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>40kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>81kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>90kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>85.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>85.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　81kg×12×3達成（8/14）。膝が内側に入らないよう注意。安定したら85kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ90kg×6〜8→85.5kg×10〜12×2。⚠️3ヶ月で+25.5kgと伸びが速いので<span class="highlight">可動域が浅くなっていないか毎回確認</span>。膝が内側に入らないよう注意</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：レッグプレスが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">ブルガリアンスクワット（ダンベル）</p>
@@ -823,13 +844,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1分　💡 水曜と合わせて<span class="highlight">週2回</span>を確保するための追加（週3プランと同じ頻度）。脚と肩は干渉しないので、脚トレの後でも影響なし。所要は約6分</p>
+      <p class="rest-note">休憩：メインセット間 1分　9kgで8〜10回×3。小さい筋肉なのでトップセットは不要。<span class="highlight">最終セットだけ限界まで</span>（回数を決めない）。9ヶ月で5→9kgと+80%、伸びている種目です</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：8kgダンベルが取れない場合</button>
       <div class="alt-body">
         <p class="alt-name">重量を下げてレップで稼ぐ</p>
@@ -860,13 +881,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52.5kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>57.5kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　⭐ 週5プランの利点：この日の1種目目なので<span class="highlight">一番元気な状態</span>で入れる。3セット目10repsの突破が狙える。10×3が揃ったら55kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ57.5kgで6〜8回→<span class="highlight">55kgで8〜10回×2</span>（今の重量のまま。トップ後なので体感はいつもよりキツいはず）。最終セットは限界まで。トップが8回でクリアしたら60kgへ。胸系種目とは中2〜3日空ける</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ベンチ台・スミスマシンが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">チェストプレス（マシン）</p>
@@ -886,13 +907,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>8kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>20kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>24kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>22kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>22kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　20kg×12×3が揃ったら22kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ24kg×6〜8→22kg×10〜12×2。<span class="highlight">最終セットは限界まで</span></p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ダンベルスペースが混んでいる場合</button>
       <div class="alt-body">
         <p class="alt-name">シーテッドロー（マシン）</p>
@@ -930,13 +951,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>32.5kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　3セット目が落ちるうちは30kg継続。30kg×10×3が安定したら32.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ32.5kg×6〜8→30kg×10〜12×2。<span class="highlight">最終セットは限界まで</span>。20kgまで落として再構築した種目なので数字より軌道優先</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ショルダープレスが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">パイクプッシュアップ（自重）</p>
@@ -956,13 +977,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>4kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>8kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>9kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1分　8kg×10×3が合格ライン。<span class="highlight">月曜と合わせて週2回</span>（週3プランと同じ頻度）。肩側部は回復が遅いので焦らない。最終セットが苦しければ7kgにドロップ</p>
+      <p class="rest-note">休憩：メインセット間 1分　9kgで8〜10回×3。小さい筋肉なのでトップセットは不要。<span class="highlight">最終セットだけ限界まで</span>（回数を決めない）。9ヶ月で5→9kgと+80%、伸びている種目です</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：8kgダンベルが取れない場合</button>
       <div class="alt-body">
         <p class="alt-name">重量を下げてレップで稼ぐ</p>
@@ -995,13 +1016,13 @@
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ①</span></td></tr>
           <tr class="row-warm"><td>2</td><td>30kg</td><td>5reps</td><td><span class="tag tag-warm">ウォームアップ②</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>47kg</td><td>10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>52kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>52kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>5</td><td>52kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 2〜3分　⚠️ 47kg＝1月に負傷した重量。ここで完全に定着させること。昇格条件は「3セット完遂＋翌日の腰の感覚OK」の両方。48kg以降は1kg刻みで。<span class="highlight">短時間セッションでも休憩とウォームアップは絶対に削らない</span></p>
+      <p class="rest-note">休憩：メインセット間 2〜3分　🛑<span class="highlight">この種目だけトップセットを作らない</span>。1月に負傷した47kgを超えて52kgに到達した直後のため、低回数高重量は最もリスクが高い。52kgで10reps×2が痛みなく揃うまで上げないこと。以降は1kg刻み。翌日の腰の感覚も昇格条件に含める</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：バーベル・スペースが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">ダンベルデッドリフト</p>
@@ -1034,7 +1055,7 @@
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　前足カカト重心・上体は軽い前傾まで。腰に違和感が出たら即中止（デッドリフトの後なので特に注意）</p>
+      <p class="rest-note">休憩：メインセット間 1〜2分　8kgで10〜12回×3。前足カカト重心・上体は軽い前傾まで。腰に違和感が出たら即中止。<span class="highlight">最終セットは限界まで</span></p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ダンベル・ベンチ台が使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">グルートブリッジ（自重）</p>
@@ -1072,13 +1093,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>50kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　シート高さは毎回同じ設定（グリップが胸の高さ）。45kg×12×3が作れたら47.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐45kg×12×3を達成済みのためトップ50kg×6〜8を追加。シート高さは毎回同じ設定。<span class="highlight">最終セットは限界まで</span></p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：チェストプレスが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">ベンチプレス</p>
@@ -1105,13 +1126,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>8〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>47kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　肘を引き下ろす意識で。フォームが崩れる時は40kgに戻してOK。45kg×10×3がきれいに揃ったら47kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ47kg×6〜8→45kg×10〜12×2。肘を引き下ろす意識で。<span class="highlight">フォームが崩れたらその時点で終了</span></p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ラットプルダウンが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">もう一方のラットプルダウン</p>
@@ -1138,13 +1159,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>60kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：メインセット間 1〜2分　フォームが崩れる時は50kgに戻してOK。55kg×10×3が安定したら57.5kgへ</p>
+      <p class="rest-note">休憩：トップセット後は2〜3分／バックオフ間 1〜2分　⭐トップ60kg×6〜8→55kg×10〜12×2。<span class="highlight">最終セットは限界まで</span>。引けなくなったら重量を戻してOK</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：シーテッドローが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">ダンベルローイング</p>
@@ -1260,6 +1281,43 @@
       <p>記録したデータをもとに成長を確認</p>
     </div>
 
+    <!-- 9ヶ月の総括 2026-09-03 -->
+    <div class="analysis-section" style="background:white;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      <div class="analysis-section-title">📈 9ヶ月の総括（2025-12 〜 2026-09／102日分）</div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">🏆 到達点</p>
+        <p class="rule-body-text">
+          スクワット 37→<span class="highlight">52kg</span>（+41%）／デッドリフト 37→<span class="highlight">52kg</span><br>
+          ベンチ 45→<span class="highlight">55kg</span>／シーテッドロー 40→<span class="highlight">55kg</span><br>
+          ダンベルロー 16→22kg／ブルガリアン 3→8kg／<span class="highlight">サイドレイズ 5→9kg（+80%）</span><br>
+          月間ボリュームは1月比<span class="highlight">2.05倍</span>（38,184→78,266kg）<br>
+          <b>→ 体重を63.9→60.8kgと落としながら全種目が伸長。減量中の筋力向上は上出来</b>
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">🎖️ デッドリフトが負傷重量を超えた</p>
+        <p class="rule-body-text">
+          2026-01-03に<span class="highlight">47kg×14</span>で腰を負傷 → 17kgまで落として再構築 →<br>
+          2026-09-03に<span class="highlight">52kg×8</span>を痛みの記録なしで達成（負傷ラインを+5kg超え）
+        </p>
+      </div>
+
+      <div class="rule-card" style="box-shadow:none;border:1px solid #eee;">
+        <p class="rule-title">🔍 伸びが「遅い」と感じる理由の分析</p>
+        <p class="rule-body-text">
+          ペースは ベンチ<span class="highlight">+1.23kg/月</span>・スクワット<span class="highlight">+1.83kg/月</span>。中級者としては標準〜良好で、遅くはありません。<br>
+          ① 12月時点で既に初心者ではなかった（初心者特有の急上昇は通過済み）<br>
+          ② <span class="highlight">全期間カロリー赤字</span>。筋肥大に不利な条件で伸ばしている<br>
+          ③ 1月の負傷でデッドリフトを数ヶ月リハビリに充てた<br>
+          <b>→ YouTubeの「3ヶ月で激変」は増量中の初心者。比較対象が違う</b>
+        </p>
+      </div>
+
+      <div class="tip" style="margin-top:8px;">体脂肪13%に到達したあと増量期に切り替えると、そこが最も数字が伸びる局面になります。今はその土台を守る期間。</div>
+    </div>
+
     <!-- トレーナー分析 2026-08-18 -->
     <div class="analysis-section" style="background:white;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
       <div class="analysis-section-title">📋 トレーナー分析（2026-08-18）</div>
@@ -1373,7 +1431,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-09-03b';
+const APP_VERSION = '2026-09-04b';
 
 // パターン別デフォルト種目
 const EXERCISES = {
