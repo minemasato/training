@@ -1373,7 +1373,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-09-03';
+const APP_VERSION = '2026-09-03b';
 
 // パターン別デフォルト種目
 const EXERCISES = {
@@ -1924,37 +1924,62 @@ function audioDiagnostics() {
   return { ctx: audioCtx ? audioCtx.state : 'null', session: sess };
 }
 
+// ★ AudioContextの作り直しは厳重に制限する。
+//   iOSは同時に持てるAudioContextの数に上限があり、作り直しを繰り返すと
+//   ページごとクラッシュする（画面が真っ白になって再読み込みされる）。
+//   また、ユーザー操作の外で作り直しても復帰しないので意味がない。
+let audioCtxCount = 0;      // 生成した総数（上限管理）
+let lastHardReset = 0;      // 作り直しのクールダウン
+let lastAudioCheck = 0;     // カウント中の健全性チェックの間引き
+const AUDIO_CTX_LIMIT = 6;
+
+function makeAudioCtx() {
+  if (audioCtxCount >= AUDIO_CTX_LIMIT) return null;
+  try {
+    audioCtxCount++;
+    return new (window.AudioContext || window.webkitAudioContext)();
+  } catch(e) { return null; }
+}
+
+// 軽い処理のみ。ここでは絶対に作り直さない（ループ暴走を防ぐ）
 function ensureAudio() {
   setAudioSessionType();
   try {
     if (!audioCtx || audioCtx.state === 'closed') {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      audioCtx = makeAudioCtx();
+      keepAlive = null;
       return;
     }
-    if (audioCtx.state !== 'running') {
-      audioCtx.resume().catch(() => {});
-      // resumeしても戻らない（iOSのinterrupted固着）場合は作り直す
-      setTimeout(() => {
-        if (audioCtx && audioCtx.state !== 'running' && audioCtx.state !== 'closed') {
-          try { audioCtx.close(); } catch(e) {}
-          try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            keepAlive = null;
-            if (restTimerEnd !== null) startKeepAlive();
-          } catch(e) { audioCtx = null; }
-        }
-      }, 400);
-    }
+    if (audioCtx.state !== 'running') audioCtx.resume().catch(() => {});
   } catch(e) {}
 }
-document.addEventListener('touchstart', () => { ensureAudio(); flushPendingAlarm(); }, { passive: true });
-document.addEventListener('click', () => { ensureAudio(); flushPendingAlarm(); });
+
+// 完全な作り直し。ユーザー操作の中からのみ・クールダウン付きで呼ぶ
+function hardResetAudio() {
+  const now = Date.now();
+  if (now - lastHardReset < 3000) return;
+  if (audioCtxCount >= AUDIO_CTX_LIMIT) return;
+  lastHardReset = now;
+  try { if (audioCtx) audioCtx.close(); } catch(e) {}
+  keepAlive = null;
+  audioCtx = makeAudioCtx();
+  ensureAudio();
+  if (restTimerEnd !== null) startKeepAlive();
+}
+
+// ユーザー操作時だけ、止まっていれば作り直しを試みる
+function onUserGestureAudio() {
+  ensureAudio();
+  if (audioCtx && audioCtx.state !== 'running') hardResetAudio();
+  flushPendingAlarm();
+}
+document.addEventListener('touchstart', onUserGestureAudio, { passive: true });
+document.addEventListener('click', onUserGestureAudio);
 
 // カウント中だけ、ほぼ無音の発振器を鳴らし続けてAudioContextのスリープを防ぐ。
 // Web Audio なので音楽の再生は止めない。
 function startKeepAlive() {
-  ensureAudio();
-  if (!audioCtx || keepAlive) return;
+  if (!audioCtx || audioCtx.state !== 'running' || keepAlive) return;
   try {
     const o = audioCtx.createOscillator(), g = audioCtx.createGain();
     g.gain.value = 0.0001; // 実質無音
@@ -1975,29 +2000,15 @@ function beepNow() {
   if (!audioCtx) return false;
   if (audioCtx.state === 'running') return scheduleBeeps();
 
-  // 中断中（音楽再生中に起きやすい）：resume→ダメならContextを作り直して再試行
+  // 中断中（音楽再生中に起きやすい）：resumeだけ試す。
+  // ここでContextを作り直すとクラッシュの原因になるので行わない。
+  // 鳴らせなければ保留にして、次のタップ時（＝ユーザー操作）に鳴らす。
   try {
     audioCtx.resume().then(() => {
-      if (audioCtx && audioCtx.state === 'running' && scheduleBeeps()) {
-        pendingAlarm = null;
-      } else {
-        rebuildAndBeep();
-      }
-    }).catch(() => rebuildAndBeep());
-  } catch(e) { rebuildAndBeep(); }
-  return false;
-}
-
-// 中断から戻らない場合の最終手段：AudioContextを作り直して鳴らす
-function rebuildAndBeep() {
-  try {
-    if (audioCtx) { try { audioCtx.close(); } catch(e) {} }
-    keepAlive = null;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const go = () => { if (scheduleBeeps()) pendingAlarm = null; };
-    if (audioCtx.state === 'running') go();
-    else audioCtx.resume().then(go).catch(() => {});
+      if (audioCtx && audioCtx.state === 'running' && scheduleBeeps()) pendingAlarm = null;
+    }).catch(() => {});
   } catch(e) {}
+  return false;
 }
 
 function scheduleBeeps() {
@@ -2022,8 +2033,11 @@ function scheduleBeeps() {
 
 // --- タイマー本体 ---------------------------------------------------------
 function startRestTimer(sec) {
+  // ボタンを押した瞬間＝ユーザー操作なので、ここでだけ確実に復帰させておく
   ensureAudio();
+  if (!audioCtx || audioCtx.state !== 'running') hardResetAudio();
   startKeepAlive();
+  lastAudioCheck = Date.now();
   pendingAlarm = null;
   restTimerEnd = Date.now() + sec * 1000;
   clearInterval(restTimerInt);
@@ -2040,15 +2054,25 @@ function tickRestTimer() {
     clearInterval(restTimerInt);
     restTimerInt = null;
     restTimerEnd = null;
-    badge.textContent = '✅ 休憩終了！次のセットへ';
     fireAlarm();
+    // 音を鳴らせなかった場合はその旨を出す（タップすれば鳴る）
+    badge.textContent = pendingAlarm
+      ? '✅ 休憩終了！（🔇 タップで音を再生）'
+      : '✅ 休憩終了！次のセットへ';
     stopKeepAlive();
     setTimeout(() => { badge.style.display = 'none'; }, 6000);
     return;
   }
-  // カウント中の健康チェック：音声が止まっていたら復帰させ、キープアライブも張り直す
-  if (!audioCtx || audioCtx.state !== 'running') ensureAudio();
-  if (!keepAlive) startKeepAlive();
+  // カウント中の健康チェックは2秒に1回だけ。resumeのみで、作り直しはしない
+  const now = Date.now();
+  if (now - lastAudioCheck > 2000) {
+    lastAudioCheck = now;
+    try {
+      if (!audioCtx || audioCtx.state === 'closed') ensureAudio();
+      else if (audioCtx.state !== 'running') audioCtx.resume().catch(() => {});
+      else if (!keepAlive) startKeepAlive();
+    } catch(e) {}
+  }
   const m = Math.floor(remain / 60), sec2 = remain % 60;
   badge.textContent = `⏱ ${m}:${String(sec2).padStart(2, '0')}（タップで中止）`;
 }
@@ -2094,6 +2118,7 @@ function testBeep() {
   const badge = document.getElementById('rest-timer-badge');
   setAudioSessionType();
   ensureAudio();
+  if (!audioCtx || audioCtx.state !== 'running') hardResetAudio();
   const ok = beepNow();
   const d = audioDiagnostics();
   badge.style.display = 'block';
