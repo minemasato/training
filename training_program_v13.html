@@ -105,6 +105,18 @@
   .form-item-text b { color: #8a4f06; }
   .form-foot { font-size: 11px; color: #8a6b3d; margin-top: 8px; line-height: 1.5; background: #fff; border-radius: 6px; padding: 7px 9px; }
 
+  /* 自動バックアップからの復元 */
+  .backup-panel { display: none; background: #f3f4f6; border: 1px solid #e0e3e8; border-radius: 10px; padding: 11px 12px; margin-bottom: 12px; }
+  .backup-panel.open { display: block; }
+  .backup-head { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 3px; }
+  .backup-lead { font-size: 11px; color: #6b7280; line-height: 1.5; margin-bottom: 9px; }
+  .backup-row { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; }
+  .backup-info { flex: 1; min-width: 0; }
+  .backup-when { font-size: 12px; font-weight: 600; color: #1e3a5f; }
+  .backup-what { font-size: 10px; color: #9ca3af; margin-top: 1px; }
+  .backup-restore { flex: 0 0 auto; background: #4b7bec; color: #fff; border: none; border-radius: 6px; padding: 7px 11px; font-size: 11px; font-weight: 600; cursor: pointer; }
+  .backup-none { font-size: 12px; color: #9ca3af; text-align: center; padding: 10px 0; }
+
   /* ルール */
   .rules-section { margin-top: 20px; border-top: 1px solid #e8e8e8; padding-top: 14px; }
   .rules-toggle { width: 100%; background: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #666; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
@@ -1395,7 +1407,9 @@
       <button class="csv-btn" onclick="exportCSV()">📥 CSVを出力</button>
       <button class="csv-btn" style="background:#e67e22;" onclick="document.getElementById('csv-import-input').click()">📤 CSVを読込</button>
       <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importCSV(this)">
+      <button class="csv-btn" style="background:#6b7280;" onclick="toggleBackupPanel()">🛟 復元</button>
     </div>
+    <div id="backup-panel" class="backup-panel"></div>
     <div id="history-list"></div>
   </div>
 </div>
@@ -1651,7 +1665,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-10-08c';
+const APP_VERSION = '2026-10-08d';
 
 // パターン別デフォルト種目
 const EXERCISES = {
@@ -1708,7 +1722,71 @@ const ALL_EXERCISES = [
 function getRecords() {
   try { return JSON.parse(localStorage.getItem('training_records') || '[]'); } catch(e) { return []; }
 }
-function saveRecords(records) {
+// 保存・編集・削除・インポートの直前に、必ず今の状態を控えておく。
+// 上書きや誤操作でデータが消えても「🛟 復元」から戻せるようにするための保険。
+const BACKUP_KEY = 'training_backups';
+const BACKUP_MAX = 8;
+function pushBackup(reason) {
+  try {
+    const cur = localStorage.getItem('training_records');
+    if (!cur || cur === '[]') return;
+    const list = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]');
+    if (list.length && list[0].data === cur) return; // 中身が同じならためない
+    const days = (JSON.parse(cur) || []).length;
+    list.unshift({ at: new Date().toISOString(), reason: reason || '保存', days, data: cur });
+    while (list.length > BACKUP_MAX) list.pop();
+    localStorage.setItem(BACKUP_KEY, JSON.stringify(list));
+  } catch(e) {
+    // 容量オーバー等でバックアップが取れなくても、本体の保存は止めない
+    try { localStorage.removeItem(BACKUP_KEY); } catch(e2) {}
+  }
+}
+function getBackups() {
+  try { return JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]'); } catch(e) { return []; }
+}
+function toggleBackupPanel() {
+  const p = document.getElementById('backup-panel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) renderBackupPanel();
+}
+function renderBackupPanel() {
+  const list = getBackups();
+  const p = document.getElementById('backup-panel');
+  const head = '<p class="backup-head">🛟 自動バックアップ</p>'
+    + '<p class="backup-lead">保存・編集・削除・インポートの<b>直前の状態</b>を自動で' + BACKUP_MAX + '件まで控えています。'
+    + '上書きや消し間違いに気づいたら、ここから戻せます（戻す直前の状態もバックアップされます）。</p>';
+  if (list.length === 0) {
+    p.innerHTML = head + '<p class="backup-none">まだバックアップはありません</p>';
+    return;
+  }
+  p.innerHTML = head + list.map((b, i) => {
+    const d = new Date(b.at);
+    const when = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    return `<div class="backup-row">
+        <div class="backup-info">
+          <div class="backup-when">${when} 時点（${b.days}日分）</div>
+          <div class="backup-what">この直後の操作：${b.reason || '不明'}</div>
+        </div>
+        <button class="backup-restore" onclick="restoreBackup(${i})">戻す</button>
+      </div>`;
+  }).join('');
+}
+function restoreBackup(i) {
+  const list = getBackups();
+  const b = list[i];
+  if (!b) return;
+  const now = getRecords().length;
+  const d = new Date(b.at);
+  const when = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  if (!confirm(`${when}時点の状態（${b.days}日分）に戻します。\n\n今の記録（${now}日分）は置き換わりますが、\n今の状態もバックアップに残るので戻し直せます。\n\n実行しますか？`)) return;
+  pushBackup('復元の直前');
+  localStorage.setItem('training_records', b.data);
+  renderHistory();
+  renderBackupPanel();
+  alert(`${when}時点の状態に戻しました（${b.days}日分）`);
+}
+function saveRecords(records, reason) {
+  pushBackup(reason);
   localStorage.setItem('training_records', JSON.stringify(records));
 }
 
@@ -2532,6 +2610,7 @@ async function saveRecord() {
        { label: '♻️ 上書きする（既存は消える）', value: 'overwrite' },
        { label: 'キャンセル', value: '' }]);
     if (!mode) return;
+    if (mode === 'overwrite' && !confirm(`⚠️ 本当に上書きしますか？\n\n${dateStr}の既存の記録\n「${curList}」\nは消えます。\n\n※もし間違えても、履歴の「🛟 復元」から戻せます`)) return;
     if (mode === 'append') {
       exerciseData.forEach(ne => {
         const ex = cur.exercises.find(e => e.name === ne.name);
@@ -2546,7 +2625,7 @@ async function saveRecord() {
     records.push(record);
   }
   records.sort((a,b) => b.date.localeCompare(a.date));
-  saveRecords(records);
+  saveRecords(records, existingIdx >= 0 ? '保存（同じ日に追記/上書き）' : '保存');
   localStorage.removeItem('training_draft');
   const promos = checkPromotions(exerciseData);
   alert('記録を保存しました！' + (promos.length ? '\n\n' + promos.join('\n\n') : ''));
@@ -2597,7 +2676,7 @@ function toggleDetail(item) {
 function confirmDelete(btn, date) {
   if (btn.dataset.confirmed) {
     const records = getRecords().filter(r => r.date !== date);
-    saveRecords(records);
+    saveRecords(records, date + ' を削除');
     renderHistory();
   } else {
     btn.dataset.confirmed = '1';
@@ -2717,7 +2796,7 @@ function saveEditRecord(btn, origDate) {
   if (idx === -1) return;
   records[idx] = { date: newDate, pattern, note, exercises };
   records.sort((a, b) => b.date.localeCompare(a.date));
-  saveRecords(records);
+  saveRecords(records, origDate + ' を編集');
   renderHistory();
 }
 
@@ -2937,7 +3016,8 @@ function importCSV(input) {
           if (kgIdx >= 0 && repIdx >= 0) {
             const w = parseFloat(cols[kgIdx]);
             const r = parseInt(cols[repIdx]);
-            if (!isNaN(w) && !isNaN(r) && w > 0 && r > 0) sets.push({ weight: w, reps: r });
+            // 0kgは自重種目（腹筋・ウォーキング・グルートブリッジ等）なので捨てない
+            if (!isNaN(r) && r > 0) sets.push({ weight: isNaN(w) || w < 0 ? 0 : w, reps: r });
           }
         }
         if (!name || sets.length === 0) continue;
@@ -2957,7 +3037,7 @@ function importCSV(input) {
         else { existing.push(imp); added++; }
       });
       existing.sort((a, b) => b.date.localeCompare(a.date));
-      saveRecords(existing);
+      saveRecords(existing, 'CSVインポート');
       input.value = '';
       alert(`インポート完了\n追加: ${added}件 / スキップ(重複): ${skipped}件`);
       renderHistory();
