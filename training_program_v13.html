@@ -117,6 +117,16 @@
   .backup-restore { flex: 0 0 auto; background: #4b7bec; color: #fff; border: none; border-radius: 6px; padding: 7px 11px; font-size: 11px; font-weight: 600; cursor: pointer; }
   .backup-none { font-size: 12px; color: #9ca3af; text-align: center; padding: 10px 0; }
 
+  /* 日付ズレの一括修正（該当記録があるときだけ出る） */
+  .shift-panel { display: none; background: #fff5f5; border: 1px solid #fbd5d5; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .shift-panel.open { display: block; }
+  .shift-head { font-size: 13px; font-weight: 700; color: #c0392b; margin-bottom: 5px; }
+  .shift-lead { font-size: 11px; color: #7f5a5a; line-height: 1.55; margin-bottom: 9px; }
+  .shift-map { background: #fff; border-radius: 7px; padding: 8px 10px; margin-bottom: 9px; }
+  .shift-line { font-size: 12px; color: #1e3a5f; padding: 3px 0; }
+  .shift-line b { color: #c0392b; }
+  .shift-btn { width: 100%; background: #e74c3c; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
   /* ルール */
   .rules-section { margin-top: 20px; border-top: 1px solid #e8e8e8; padding-top: 14px; }
   .rules-toggle { width: 100%; background: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #666; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
@@ -1410,6 +1420,7 @@
       <button class="csv-btn" style="background:#6b7280;" onclick="toggleBackupPanel()">🛟 復元</button>
     </div>
     <div id="backup-panel" class="backup-panel"></div>
+    <div id="shift-fix-panel" class="shift-panel"></div>
     <div id="history-list"></div>
   </div>
 </div>
@@ -1665,7 +1676,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-10-08d';
+const APP_VERSION = '2026-10-08e';
 
 // パターン別デフォルト種目
 const EXERCISES = {
@@ -1719,6 +1730,16 @@ const ALL_EXERCISES = [
   'その他',
 ];
 
+// ⚠️ 日付は必ずこの関数で作る。
+// new Date().toISOString() はUTCを返すため、日本時間の朝9時より前だと前日になる。
+// （朝6時台にジムへ行くようになった2026/10/4以降、記録が1日前にズレていた）
+function dateToStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayStr() {
+  return dateToStr(new Date());
+}
+
 function getRecords() {
   try { return JSON.parse(localStorage.getItem('training_records') || '[]'); } catch(e) { return []; }
 }
@@ -1771,6 +1792,77 @@ function renderBackupPanel() {
       </div>`;
   }).join('');
 }
+// ===== 日付ズレの一括修正（UTCバグで1日前に保存された分） =====
+// 朝9時前に記録した分だけ前日になっていた。新ジム移行後の朝トレ3日分が対象。
+const SHIFT_FIX = [['2026-10-06','2026-10-07'], ['2026-10-05','2026-10-06'], ['2026-10-04','2026-10-05']];
+
+const SHIFT_DONE_KEY = 'training_shift_fixed';
+
+function renderShiftFix() {
+  const panel = document.getElementById('shift-fix-panel');
+  if (!panel) return;
+  // 一度直したら二度と出さない（直した結果に対してもう一度ずらすと壊れる）
+  let done = false;
+  try { done = localStorage.getItem(SHIFT_DONE_KEY) === '1'; } catch(e) {}
+  if (done) { panel.classList.remove('open'); panel.innerHTML = ''; return; }
+  const records = getRecords();
+  const hit = SHIFT_FIX.filter(([from]) => records.some(r => r.date === from));
+  if (hit.length === 0) { panel.classList.remove('open'); panel.innerHTML = ''; return; }
+  const lines = hit.map(([from, to]) => {
+    const r = records.find(x => x.date === from);
+    const names = r.exercises.map(e => e.name).join('・');
+    const merge = records.some(x => x.date === to) ? '（既存の記録に合流）' : '';
+    return `<div class="shift-line"><b>${from}</b> → <b>${to}</b>${merge}<br><span style="font-size:11px;color:#6b7280;">${names}</span></div>`;
+  }).join('');
+  panel.innerHTML = `<p class="shift-head">⚠️ 日付が1日前にズレた記録があります</p>
+    <p class="shift-lead">朝9時より前に記録すると日付が前日になるバグがありました（修正済み）。
+    該当する${hit.length}日分を1日うしろにずらして直します。同じ日に記録がある場合は、<b>消さずに合流</b>させます。
+    実行前の状態は「🛟 復元」に残ります。</p>
+    <div class="shift-map">${lines}</div>
+    <button class="shift-btn" onclick="applyShiftFix()">日付を直す（${hit.length}日分）</button>`;
+  panel.classList.add('open');
+}
+
+function applyShiftFix() {
+  const records = getRecords();
+  const plan = SHIFT_FIX.filter(([from]) => records.some(r => r.date === from));
+  if (plan.length === 0) return;
+  if (!confirm(`${plan.length}日分の日付を1日うしろにずらします。\n\n実行前の状態は「🛟 復元」に残るので、戻せます。\n\n実行しますか？`)) return;
+  pushBackup('日付ズレの一括修正');
+  let moved = 0, merged = 0;
+  // 新しい日付から処理する（10/6→10/7を先にやらないと順番に押し出せない）
+  plan.forEach(([from, to]) => {
+    const i = records.findIndex(r => r.date === from);
+    if (i < 0) return;
+    const rec = records[i];
+    const t = records.findIndex(r => r.date === to);
+    if (t >= 0) {
+      const tgt = records[t];
+      // 朝の分を先、あとから足した分（腹筋・ウォーキング等）を後ろに並べる
+      const list = rec.exercises.map(me => {
+        const ex = tgt.exercises.find(e => e.name === me.name);
+        return ex ? { name: me.name, sets: me.sets.concat(ex.sets) } : me;
+      });
+      tgt.exercises.forEach(e => {
+        if (!rec.exercises.some(me => me.name === e.name)) list.push(e);
+      });
+      tgt.exercises = list;
+      if (rec.note && rec.note !== tgt.note) tgt.note = rec.note + (tgt.note ? '／' + tgt.note : '');
+      records.splice(i, 1);
+      merged++;
+    } else {
+      rec.date = to;
+      moved++;
+    }
+  });
+  records.sort((a,b) => b.date.localeCompare(a.date));
+  localStorage.setItem('training_records', JSON.stringify(records));
+  try { localStorage.setItem(SHIFT_DONE_KEY, '1'); } catch(e) {}
+  renderHistory();
+  if (document.getElementById('backup-panel').classList.contains('open')) renderBackupPanel();
+  alert(`日付を直しました\n\nずらした：${moved}日分${merged ? `\n合流した：${merged}日分` : ''}`);
+}
+
 function restoreBackup(i) {
   const list = getBackups();
   const b = list[i];
@@ -1781,6 +1873,8 @@ function restoreBackup(i) {
   if (!confirm(`${when}時点の状態（${b.days}日分）に戻します。\n\n今の記録（${now}日分）は置き換わりますが、\n今の状態もバックアップに残るので戻し直せます。\n\n実行しますか？`)) return;
   pushBackup('復元の直前');
   localStorage.setItem('training_records', b.data);
+  // 修正前の状態に戻した場合は、日付ズレの修正ボタンをもう一度出す
+  try { localStorage.removeItem(SHIFT_DONE_KEY); } catch(e) {}
   renderHistory();
   renderBackupPanel();
   alert(`${when}時点の状態に戻しました（${b.days}日分）`);
@@ -1910,7 +2004,7 @@ function reRenderInputs() {
 
 function initRecordPage() {
   if (loadDraft()) return;
-  const today = new Date().toISOString().slice(0,10);
+  const today = todayStr();
   document.getElementById('record-date').value = today;
   document.getElementById('record-note').value = '';
   document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
@@ -1983,7 +2077,7 @@ function loadDraft() {
   const pattern = drafts.currentPattern;
   const patData = drafts.patterns[pattern];
   if (!patData || !patData.exercises) return false;
-  document.getElementById('record-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('record-date').value = todayStr();
   document.getElementById('record-note').value = patData.note || '';
   document.querySelectorAll('.pattern-select-btn').forEach(b => b.classList.remove('active'));
   const patBtn = document.querySelector(`.pattern-select-btn[data-pat="${pattern}"]`)
@@ -2592,7 +2686,7 @@ async function saveRecord() {
   if (!confirm(`${dateStr}（${pattern}パターン）の記録として保存します。よろしいですか？`)) return;
 
   // 当日と違う日付なら2段階目の確認（入力ミス・日付変更忘れ防止）
-  const today = new Date().toISOString().slice(0,10);
+  const today = todayStr();
   if (date !== today) {
     const todayStr = `${today.slice(0,4)}年${parseInt(today.slice(5,7))}月${parseInt(today.slice(8,10))}日`;
     if (!confirm(`⚠️ 本日（${todayStr}）ではありません。\n\n「${dateStr}」の記録として保存しますが、日付は合っていますか？`)) return;
@@ -2635,6 +2729,7 @@ async function saveRecord() {
 // ===== 履歴ページ =====
 function renderHistory() {
   const records = getRecords();
+  renderShiftFix();
   const container = document.getElementById('history-list');
   if (records.length === 0) {
     container.innerHTML = '<div class="history-empty">まだ記録がありません<br>「記録する」タブからトレーニングを記録しましょう</div>';
@@ -2850,7 +2945,7 @@ function renderAnalysis() {
   records.forEach(r => {
     const d = new Date(r.date);
     const mon = new Date(d); mon.setDate(d.getDate() - d.getDay() + 1);
-    const key = mon.toISOString().slice(0,10);
+    const key = dateToStr(mon);
     if (!weekMap[key]) weekMap[key] = 0;
     weekMap[key]++;
   });
@@ -2976,7 +3071,7 @@ function exportCSV() {
   const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const today = new Date().toISOString().slice(0,10);
+  const today = todayStr();
   a.href = url;
   a.download = `training_${today}.csv`;
   a.click();
