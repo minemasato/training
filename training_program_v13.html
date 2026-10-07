@@ -92,6 +92,19 @@
   .alt-cell-value { font-size: 12px; font-weight: 600; color: #1e3a5f; }
   .alt-note-text { font-size: 11px; color: #6b7280; margin-top: 7px; line-height: 1.5; }
 
+  /* フォームの注意点（動画チェック由来） */
+  .form-toggle { width: 100%; background: #fffbf2; border: none; border-top: 1px solid #fde9c8; padding: 9px 14px; font-size: 12px; color: #b4690e; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
+  .form-toggle::after { content: '▼'; font-size: 10px; transition: transform 0.2s; }
+  .form-toggle.open::after { transform: rotate(-180deg); }
+  .form-body { display: none; background: #fff8ec; padding: 10px 14px 12px; border-top: 1px solid #fde9c8; }
+  .form-body.open { display: block; }
+  .form-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px dashed #f0dcbb; }
+  .form-item:last-of-type { border-bottom: none; }
+  .form-item-label { flex: 0 0 72px; font-size: 11px; font-weight: 700; color: #b4690e; padding-top: 1px; }
+  .form-item-text { flex: 1; font-size: 12px; color: #4a3a22; line-height: 1.55; }
+  .form-item-text b { color: #8a4f06; }
+  .form-foot { font-size: 11px; color: #8a6b3d; margin-top: 8px; line-height: 1.5; background: #fff; border-radius: 6px; padding: 7px 9px; }
+
   /* ルール */
   .rules-section { margin-top: 20px; border-top: 1px solid #e8e8e8; padding-top: 14px; }
   .rules-toggle { width: 100%; background: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #666; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
@@ -210,6 +223,15 @@
   .edit-pat-btn { flex: 1 0 16%; padding: 6px 4px; font-size: 12px; font-weight: 600; border: 1px solid #eee; border-radius: 8px; background: white; color: #888; cursor: pointer; }
   .edit-pat-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
   .edit-ex-block { background: #fafafa; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid #eee; }
+  .choice-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .choice-box { background: white; border-radius: 14px; padding: 18px 16px; width: 100%; max-width: 340px; box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+  .choice-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+  .choice-msg { font-size: 12.5px; color: #666; line-height: 1.6; margin-bottom: 10px; }
+  .choice-sub { font-size: 11px; color: #aaa; }
+  .choice-btn { display: block; width: 100%; padding: 11px; margin-top: 8px; border: 1px solid #e0e0e0; border-radius: 9px; background: white; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; font-family: inherit; }
+  .choice-btn.primary { background: #c0392b; border-color: #c0392b; color: white; }
+  .choice-btn:active { opacity: 0.75; }
+  select.edit-ex-name { -webkit-appearance: none; appearance: none; background-image: linear-gradient(45deg, transparent 50%, #bbb 50%), linear-gradient(135deg, #bbb 50%, transparent 50%); background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
   .edit-ex-name { width: 100%; border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 10px; font-size: 13px; background: white; color: #1a1a1a; font-family: inherit; margin-bottom: 8px; }
   .edit-set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
   .edit-set-label { font-size: 11px; color: #aaa; flex: 0 0 38px; }
@@ -326,6 +348,16 @@
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
       <p class="rest-note">休憩：メインセット間 1〜2分　🆕<b>フリーウェイトに移行</b>。10/3は50kg×10,10,15。「支えがなくてグラグラする」のは正常で、<span class="highlight">当面は重量を上げずフォーム習得を優先</span>（2〜3週間は50kg据え置き）。⚠️必ずセーフティバーを膝下の高さに設置。混雑時はスミスマシンへ（<b>重量が変わるので別種目として記録</b>）</p>
+      <button class="form-toggle" onclick="toggleAlt(this)">⚠️ フォームの注意点（10/5 動画チェック）</button>
+      <div class="form-body">
+        <div class="form-item"><div class="form-item-label">👟 靴</div><div class="form-item-text"><b>クッション性の高いランニングシューズはNG。</b>柔らかい靴底が沈んでグラグラの原因になります。フラットな靴（コンバース系）か、靴を脱いで靴下でもOK</div></div>
+        <div class="form-item"><div class="form-item-label">🦶 スタンス</div><div class="form-item-text">動画では狭めでした。<b>肩幅＋拳1〜2個分</b>に広げ、<b>つま先を15〜30度外側</b>へ。膝はつま先と同じ方向に開く</div></div>
+        <div class="form-item"><div class="form-item-label">📐 深さ</div><div class="form-item-text">やや浅めでした。<b>太ももが床と平行</b>まで。深さが出ないと臀部・ハムが使われず、膝だけの運動になります</div></div>
+        <div class="form-item"><div class="form-item-label">🙌 前傾</div><div class="form-item-text">前のめりが強めでした。バーを<b>肩の後ろ（僧帽筋の上）にしっかり乗せ</b>、胸を張って視線は前〜やや下。<b>お尻を後ろに引きながら真下に落ちる</b>イメージ</div></div>
+        <div class="form-item"><div class="form-item-label">🫁 体幹</div><div class="form-item-text">下げる前に<b>息を吸って腹圧をかけ</b>、立ち上がりきってから吐く。各レップで吸い直す</div></div>
+        <div class="form-item"><div class="form-item-label">🏋️ 準備</div><div class="form-item-text">バーに入る前に<b>ゴブレットスクワット（ダンベル10kgを胸の前）10回</b>。深さと背中の張りの感覚を作ってから本番に入ると安定します</div></div>
+        <p class="form-foot">✅ 良かった点：<b>背中は丸まっておらず、膝も内に入っていません</b>。危険なクセはないので、重量は50kg据え置きのまま上の6点だけ直していけば大丈夫です。<br>📹 次回は<b>横からの動画</b>を撮ってください（深さと前傾は正面からだと判定しきれません）</p>
+      </div>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：15分枠に収まらない場合</button>
       <div class="alt-body">
         <p class="alt-name">ブルガリアンスクワット（ダンベル）</p>
@@ -792,6 +824,16 @@
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
       <p class="rest-note">休憩：メインセット間 1〜2分　🆕<b>フリーウェイトに移行</b>。10/3は50kg×10,10,15。「支えがなくてグラグラする」のは正常で、<span class="highlight">当面は重量を上げずフォーム習得を優先</span>（2〜3週間は50kg据え置き）。⚠️必ずセーフティバーを膝下の高さに設置。混雑時はスミスマシンへ（<b>重量が変わるので別種目として記録</b>）</p>
+      <button class="form-toggle" onclick="toggleAlt(this)">⚠️ フォームの注意点（10/5 動画チェック）</button>
+      <div class="form-body">
+        <div class="form-item"><div class="form-item-label">👟 靴</div><div class="form-item-text"><b>クッション性の高いランニングシューズはNG。</b>柔らかい靴底が沈んでグラグラの原因になります。フラットな靴（コンバース系）か、靴を脱いで靴下でもOK</div></div>
+        <div class="form-item"><div class="form-item-label">🦶 スタンス</div><div class="form-item-text">動画では狭めでした。<b>肩幅＋拳1〜2個分</b>に広げ、<b>つま先を15〜30度外側</b>へ。膝はつま先と同じ方向に開く</div></div>
+        <div class="form-item"><div class="form-item-label">📐 深さ</div><div class="form-item-text">やや浅めでした。<b>太ももが床と平行</b>まで。深さが出ないと臀部・ハムが使われず、膝だけの運動になります</div></div>
+        <div class="form-item"><div class="form-item-label">🙌 前傾</div><div class="form-item-text">前のめりが強めでした。バーを<b>肩の後ろ（僧帽筋の上）にしっかり乗せ</b>、胸を張って視線は前〜やや下。<b>お尻を後ろに引きながら真下に落ちる</b>イメージ</div></div>
+        <div class="form-item"><div class="form-item-label">🫁 体幹</div><div class="form-item-text">下げる前に<b>息を吸って腹圧をかけ</b>、立ち上がりきってから吐く。各レップで吸い直す</div></div>
+        <div class="form-item"><div class="form-item-label">🏋️ 準備</div><div class="form-item-text">バーに入る前に<b>ゴブレットスクワット（ダンベル10kgを胸の前）10回</b>。深さと背中の張りの感覚を作ってから本番に入ると安定します</div></div>
+        <p class="form-foot">✅ 良かった点：<b>背中は丸まっておらず、膝も内に入っていません</b>。危険なクセはないので、重量は50kg据え置きのまま上の6点だけ直していけば大丈夫です。<br>📹 次回は<b>横からの動画</b>を撮ってください（深さと前傾は正面からだと判定しきれません）</p>
+      </div>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：スミスマシンが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">レッグプレス（マシン）を先に→この日は2種目入れ替え</p>
@@ -1609,7 +1651,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-10-08';
+const APP_VERSION = '2026-10-08c';
 
 // パターン別デフォルト種目
 const EXERCISES = {
@@ -2421,7 +2463,27 @@ function addSet(blockId) {
 
 function removeSet(btn) { btn.closest('.record-set-row').remove(); }
 
-function saveRecord() {
+// 3択ダイアログ（confirmは2択しか出せないため）
+function askChoice(title, msgHtml, choices) {
+  return new Promise(resolve => {
+    const ov = document.createElement('div');
+    ov.className = 'choice-overlay';
+    ov.innerHTML = `<div class="choice-box">
+        <p class="choice-title">${title}</p>
+        <p class="choice-msg">${msgHtml}</p>
+        ${choices.map((c, i) => `<button class="choice-btn${c.primary ? ' primary' : ''}" data-i="${i}">${c.label}</button>`).join('')}
+      </div>`;
+    ov.addEventListener('click', e => {
+      const b = e.target.closest('.choice-btn');
+      if (!b) return;
+      ov.remove();
+      resolve(choices[+b.dataset.i].value);
+    });
+    document.body.appendChild(ov);
+  });
+}
+
+async function saveRecord() {
   const date = document.getElementById('record-date').value;
   const pattern = document.getElementById('selected-pattern').value;
   const note = document.getElementById('record-note').value;
@@ -2462,8 +2524,24 @@ function saveRecord() {
   const existingIdx = records.findIndex(r => r.date === date);
   const record = { date, pattern, exercises: exerciseData, note };
   if (existingIdx >= 0) {
-    if (!confirm('同じ日の記録があります。上書きしますか？')) return;
-    records[existingIdx] = record;
+    const cur = records[existingIdx];
+    const curList = cur.exercises.map(e => e.name).join('・');
+    const mode = await askChoice('同じ日の記録があります',
+      `${dateStr}には既に記録があります。<br><span class="choice-sub">既存：${curList}</span><br><br>どちらにしますか？`,
+      [{ label: '➕ 追記する（セットを足す）', value: 'append', primary: true },
+       { label: '♻️ 上書きする（既存は消える）', value: 'overwrite' },
+       { label: 'キャンセル', value: '' }]);
+    if (!mode) return;
+    if (mode === 'append') {
+      exerciseData.forEach(ne => {
+        const ex = cur.exercises.find(e => e.name === ne.name);
+        if (ex) ex.sets = ex.sets.concat(ne.sets);  // 同じ種目ならセットを足す
+        else cur.exercises.push(ne);                 // 新しい種目はそのまま追加
+      });
+      if (note && note !== cur.note) cur.note = (cur.note ? cur.note + '／' : '') + note;
+    } else {
+      records[existingIdx] = record;
+    }
   } else {
     records.push(record);
   }
@@ -2548,7 +2626,7 @@ function showEditForm(btn, date) {
       </div>`
     ).join('');
     return `<div class="edit-ex-block">
-      <input class="edit-ex-name" type="text" value="${e.name}">
+      ${makeEditExSelect(e.name)}
       <div class="edit-sets-container">${setRows}</div>
       <button class="edit-add-set-btn" onclick="addEditSet(this)">＋ セット追加</button>
     </div>`;
@@ -2584,11 +2662,20 @@ function addEditSet(btn) {
   container.appendChild(div.firstElementChild);
 }
 
+// 履歴編集の種目プルダウン。古い記録にしかない種目名も選択肢として残す
+function makeEditExSelect(selected) {
+  const names = ALL_EXERCISES.slice();
+  if (selected && !names.includes(selected)) names.unshift(selected);
+  const head = selected ? '' : '<option value="">種目を選択…</option>';
+  const opts = names.map(n => `<option value="${n}"${n === selected ? ' selected' : ''}>${n}</option>`).join('');
+  return `<select class="edit-ex-name">${head}${opts}</select>`;
+}
+
 function addEditExBlock(btn) {
   const container = btn.previousElementSibling;
   const div = document.createElement('div');
   div.innerHTML = `<div class="edit-ex-block">
-    <input class="edit-ex-name" type="text" placeholder="種目名">
+    ${makeEditExSelect('')}
     <div class="edit-sets-container">
       <div class="edit-set-row">
         <span class="edit-set-label">セット1</span>
@@ -2782,13 +2869,18 @@ function exportCSV() {
     return;
   }
 
-  // ヘッダー
-  const rows = [['日付','パターン','種目名','セット1(kg)','セット1(reps)','セット2(kg)','セット2(reps)','セット3(kg)','セット3(reps)','セット4(kg)','セット4(reps)','メモ']];
+  // セット列は記録に合わせて可変。追記で5セット以上になっても欠けないようにする（最低4列は従来どおり）
+  let maxSets = 4;
+  records.forEach(r => r.exercises.forEach(ex => { if (ex.sets.length > maxSets) maxSets = ex.sets.length; }));
+  const header = ['日付','パターン','種目名'];
+  for (let i = 1; i <= maxSets; i++) header.push(`セット${i}(kg)`, `セット${i}(reps)`);
+  header.push('メモ');
+  const rows = [header];
 
   records.slice().reverse().forEach(r => {
     r.exercises.forEach(ex => {
       const row = [r.date, r.pattern, ex.name];
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < maxSets; i++) {
         if (ex.sets[i]) {
           row.push(ex.sets[i].weight, ex.sets[i].reps);
         } else {
@@ -2839,7 +2931,7 @@ function importCSV(input) {
         const name = cols[nameIdx];
         const note = noteIdx >= 0 ? (cols[noteIdx] || '') : '';
         const sets = [];
-        for (let s = 1; s <= 4; s++) {
+        for (let s = 1; s <= 12; s++) {
           const kgIdx = headers.indexOf(`セット${s}(kg)`);
           const repIdx = headers.indexOf(`セット${s}(reps)`);
           if (kgIdx >= 0 && repIdx >= 0) {
