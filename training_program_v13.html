@@ -127,6 +127,16 @@
   .shift-line b { color: #c0392b; }
   .shift-btn { width: 100%; background: #e74c3c; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 700; cursor: pointer; }
 
+  /* 記録もれの種目をあとから足すパネル（足したら消える） */
+  .add-panel { display: none; background: #eef6ff; border: 1px solid #cfe2ff; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .add-panel.open { display: block; }
+  .add-head { font-size: 13px; font-weight: 700; color: #1e5fa8; margin-bottom: 5px; }
+  .add-lead { font-size: 11px; color: #5b7596; line-height: 1.55; margin-bottom: 9px; }
+  .add-box { background: #fff; border-radius: 7px; padding: 8px 10px; margin-bottom: 9px; }
+  .add-ex { font-size: 12px; color: #1e3a5f; padding: 3px 0; }
+  .add-ex b { color: #1e5fa8; }
+  .add-btn { width: 100%; background: #4b7bec; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
   /* ルール */
   .rules-section { margin-top: 20px; border-top: 1px solid #e8e8e8; padding-top: 14px; }
   .rules-toggle { width: 100%; background: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #666; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; }
@@ -654,13 +664,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>50kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>60kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　🆕<span class="highlight">新ジムの機種が違うため暫定値</span>。トップ50kg／バックオフ45kgで感触を確かめ、軽ければ次回+5kg。旧ジムではトップ55kg×8まで到達していた</p>
+      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>60kg</b>×6〜8→<b>55kg</b>×10〜12×2（5kg刻み）。10/9は60kg×7・55kg×10・55kg×13。<span class="highlight">トップで8回出たら65kgへ</span>。最終セットで13回出ているのでバックオフは余裕あり、回数を伸ばすより次はトップの8回を取りに行く</p>
     </div>
 
     <div class="card">
@@ -686,13 +696,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>35kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>30kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>25kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>25kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>35kg</b>×6〜8→<b>30kg</b>×10〜12×2。<span class="highlight">このマシンは5kg刻み</span>なので次は40kg（+14%と大きい）。35kgで8回に届いたら、まず<b>回数を10回まで伸ばしてから</b>40kgへ。旧ジムでは9/25に35kg×10を達成済み</p>
+      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>30kg</b>×6〜8→<b>25kg</b>×10〜12×2。10/7に35kgで4回・30kgの3セット目も4回と潰れたため<span class="highlight">一段下げた</span>。旧ジムでは35kg×10だったが、<b>この機種は同じ数字でも明らかに重い</b>（本人談「重くて固い」）。30kgで8回きれいに挙がってから35kgへ</p>
     </div>
 
     <div class="card">
@@ -1043,13 +1053,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>35kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>30kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>30kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>25kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>25kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>35kg</b>×6〜8→<b>30kg</b>×10〜12×2。<span class="highlight">このマシンは5kg刻み</span>なので次は40kg（+14%と大きい）。35kgで8回に届いたら、まず<b>回数を10回まで伸ばしてから</b>40kgへ。旧ジムでは9/25に35kg×10を達成済み</p>
+      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>30kg</b>×6〜8→<b>25kg</b>×10〜12×2。10/7に35kgで4回・30kgの3セット目も4回と潰れたため<span class="highlight">一段下げた</span>。旧ジムでは35kg×10だったが、<b>この機種は同じ数字でも明らかに重い</b>（本人談「重くて固い」）。30kgで8回きれいに挙がってから35kgへ</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ショルダープレスが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">パイクプッシュアップ（自重）</p>
@@ -1228,13 +1238,13 @@
         <table class="set-table">
           <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
           <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>50kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>45kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>60kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>55kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　🆕<span class="highlight">新ジムの機種が違うため暫定値</span>。トップ50kg／バックオフ45kgで感触を確かめ、軽ければ次回+5kg。旧ジムではトップ55kg×8まで到達していた</p>
+      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>60kg</b>×6〜8→<b>55kg</b>×10〜12×2（5kg刻み）。10/9は60kg×7・55kg×10・55kg×13。<span class="highlight">トップで8回出たら65kgへ</span>。最終セットで13回出ているのでバックオフは余裕あり、回数を伸ばすより次はトップの8回を取りに行く</p>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：チェストプレスが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">ベンチプレス</p>
@@ -1257,30 +1267,31 @@
 
     <div class="card">
       <div class="card-top">
-        <div class="card-header"><span class="card-name">ラットプルダウン（マシン）</span><span class="badge badge-back">広背筋</span></div>
+        <div class="card-header"><span class="card-name">アシストチンディップ</span><span class="badge badge-back">広背筋・体幹</span></div>
         <table class="set-table">
-          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
-          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr><th>セット</th><th>補助の重り</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>30kg</td><td>10reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>20kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>20kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>20kg</td><td>8〜10reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>45kg</b>×6〜8→<b>40kg</b>×10〜12×2。<span class="highlight">このマシンは5kg刻み</span>。10/3は50kgで5回しか引けずフォームも崩れたため一段下げた。45kgで8回きれいに引けたら50kgへ</p>
-      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ラットプルダウンが使用中の場合</button>
+      <p class="rest-note">休憩：1〜2分　⚠️<b>この種目だけ数字の意味が逆</b>。記録するのは「補助の重り」で、<span class="highlight">軽いほどキツい</span>。昇格は<b>減らす</b>方向（20→15→10→5→0＝自力の懸垂）。アプリも逆向きで判定します。<br>🖐️グリップは<b>パラレル（手のひらが向き合う縦持ち）</b>が肘にやさしく力も出る。肩をすくめず、<b>胸を鎖骨からバーに近づける</b>。下まで伸ばしきってから次の回へ。<br>⭐当面は<b>補助20kgで8〜10回×3</b>を揃えるのが目標。揃ったら15kgへ。減量で体重が落ちるぶんも有利に働きます</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：アシストチンディップが使用中の場合</button>
       <div class="alt-body">
-        <p class="alt-name">もう一方のラットプルダウン</p>
+        <p class="alt-name">ラットプルダウン（マシン）</p>
         <div class="alt-grid">
           <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">45kg</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">8〜12reps × 3</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">トップ</div><div class="alt-cell-value">45kg × 6〜8</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">バックオフ</div><div class="alt-cell-value">40kg × 10〜12 × 2</div></div>
           <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
         </div>
+        <p class="alt-note-text">※このジムは2台あるのでどちらでも。10/3は50kgで5回しか引けずフォームも崩れたため45kgに一段下げています。45kgで8回きれいに引けたら50kgへ</p>
         <p class="alt-name" style="margin-top:10px;">どちらも使用中：ダンベルローイング</p>
         <div class="alt-grid">
           <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">8kg × 15</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">22kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">22.5kg</div></div>
           <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
           <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
         </div>
@@ -1290,27 +1301,35 @@
 
     <div class="card">
       <div class="card-top">
-        <div class="card-header"><span class="card-name">シーテッドロー（マシン）</span><span class="badge badge-back">広背筋・僧帽筋</span></div>
+        <div class="card-header"><span class="card-name">ローロー（プレートロード）</span><span class="badge badge-back">広背筋・僧帽筋</span></div>
         <table class="set-table">
-          <tr><th>セット</th><th>重量</th><th>回数</th><th></th></tr>
-          <tr class="row-warm"><td>1</td><td>20kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
-          <tr class="row-main row-top" onclick="toggleSet(this)"><td>2</td><td>45kg</td><td>6〜8reps</td><td><span class="tag tag-top">トップ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
-          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>40kg</td><td>10〜12reps</td><td><span class="tag tag-main">バックオフ</span></td></tr>
+          <tr><th>セット</th><th>片側の重量</th><th>回数</th><th></th></tr>
+          <tr class="row-warm"><td>1</td><td>10kg</td><td>15reps</td><td><span class="tag tag-warm">ウォームアップ</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>22.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>22.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>4</td><td>22.5kg</td><td>10〜12reps</td><td><span class="tag tag-main">メイン</span></td></tr>
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>45kg</b>×6〜8→<b>40kg</b>×10〜12×2（5kg刻み）。🆕<span class="highlight">この機種は胸当てがないローロータイプ</span>。上体を振ると背中に効かず腰に乗る。<b>上体はほぼ垂直のまま・膝は軽く曲げる・肘を体の後ろまで</b>。振らないと引けないなら重すぎ</p>
-      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：シーテッドローが使用中の場合</button>
+      <p class="rest-note">休憩：1〜2分　⚠️記録は<b>片側の重量</b>（プレートの合計ではなく、片方に挿した分）。<span class="highlight">胸当てがあるので上体を振れず、シーテッドローより確実に背中に入ります</span>。左右別々に動くので<b>弱い側に合わせる</b>こと。<br>10/9実績：片側20kg×15／23.75kg×10ギリギリ／25kg×7。<b>片側22.5kgで10〜12回×3</b>が揃ったら25kgへ（1.25kgプレートがあれば23.75kgを挟んでも可）</p>
+      <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ローローが使用中の場合</button>
       <div class="alt-body">
-        <p class="alt-name">ダンベルローイング</p>
+        <p class="alt-name">シーテッドロー（マシン）</p>
+        <div class="alt-grid">
+          <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">20kg × 15</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">トップ</div><div class="alt-cell-value">45kg × 6〜8</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">バックオフ</div><div class="alt-cell-value">40kg × 10〜12 × 2</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
+        </div>
+        <p class="alt-note-text">※この機種は<b>胸当てがない</b>ので上体を振りやすい。振ると背中に効かず腰に乗ります。上体はほぼ垂直のまま・膝は軽く曲げる・肘を体の後ろまで。振らないと引けないなら重すぎ</p>
+        <p class="alt-name" style="margin-top:10px;">どちらも使用中：ダンベルローイング</p>
         <div class="alt-grid">
           <div class="alt-cell"><div class="alt-cell-label">ウォームアップ</div><div class="alt-cell-value">8kg × 15</div></div>
-          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">22kg</div></div>
+          <div class="alt-cell"><div class="alt-cell-label">メイン重量</div><div class="alt-cell-value">22.5kg</div></div>
           <div class="alt-cell"><div class="alt-cell-label">メイン回数</div><div class="alt-cell-value">10〜12reps × 3</div></div>
           <div class="alt-cell"><div class="alt-cell-label">休憩</div><div class="alt-cell-value">1〜2分</div></div>
         </div>
-        <p class="alt-note-text">※この日は3種目あるので、時間が押していれば<span class="highlight">この種目を丸ごと飛ばしてOK</span>。ラットプルダウンで背中は確保できています</p>
+        <p class="alt-note-text">※この日は3種目あるので、時間が押していれば<span class="highlight">この種目を丸ごと飛ばしてOK</span>。アシストチンディップで背中は確保できています</p>
       </div>
     </div>
 
@@ -1421,6 +1440,7 @@
     </div>
     <div id="backup-panel" class="backup-panel"></div>
     <div id="shift-fix-panel" class="shift-panel"></div>
+    <div id="add-ex-panel" class="add-panel"></div>
     <div id="history-list"></div>
   </div>
 </div>
@@ -1676,7 +1696,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-10-08e';
+const APP_VERSION = '2026-10-09c';
 
 // パターン別デフォルト種目
 const EXERCISES = {
@@ -1689,7 +1709,7 @@ const EXERCISES = {
   火: ['ベンチプレス','ダンベルローイング','ウォーキング（分）'],
   水: ['ショルダープレス（マシン）','サイドレイズ','デクラインクランチ','ウォーキング（分）'],
   木: ['デッドリフト（バーベル）','ブルガリアンスクワット','ウォーキング（分）'],
-  金: ['チェストプレス（マシン）','ラットプルダウン（マシン）','シーテッドロー（マシン）','ウォーキング（分）']
+  金: ['チェストプレス（マシン）','アシストチンディップ','ローロー（プレートロード）','ウォーキング（分）']
 };
 
 // 履歴バッジ用のラベル・配色クラス
@@ -1727,6 +1747,8 @@ const ALL_EXERCISES = [
   'グルートブリッジ',
   'パイクプッシュアップ',
   'アブローラー（膝コロ）',
+  'アシストチンディップ',
+  'ローロー（プレートロード）',
   'その他',
 ];
 
@@ -1823,6 +1845,52 @@ function renderShiftFix() {
   panel.classList.add('open');
 }
 
+// ===== 10/9の代替2種目をあとから足す（メモにしか残っていなかった分） =====
+const ADD_EX_KEY = 'training_added_1009';
+const ADD_EX_PLAN = {
+  date: '2026-10-09',
+  exercises: [
+    { name: 'アシストチンディップ', sets: [{weight:15,reps:4},{weight:20,reps:10},{weight:25,reps:10}] },
+    { name: 'ローロー（プレートロード）', sets: [{weight:20,reps:15},{weight:23.75,reps:10},{weight:25,reps:7}] }
+  ]
+};
+
+function renderAddEx() {
+  const panel = document.getElementById('add-ex-panel');
+  if (!panel) return;
+  let done = false;
+  try { done = localStorage.getItem(ADD_EX_KEY) === '1'; } catch(e) {}
+  const rec = getRecords().find(r => r.date === ADD_EX_PLAN.date);
+  const need = rec && ADD_EX_PLAN.exercises.filter(e => !rec.exercises.some(x => x.name === e.name));
+  if (done || !rec || need.length === 0) { panel.classList.remove('open'); panel.innerHTML = ''; return; }
+  const lines = need.map(e => {
+    const s = e.sets.map(x => `${x.weight}kg×${x.reps}`).join('／');
+    return `<div class="add-ex"><b>${e.name}</b><br><span style="font-size:11px;color:#6b7280;">${s}</span></div>`;
+  }).join('');
+  panel.innerHTML = `<p class="add-head">➕ 10/9の代替種目が記録に入っていません</p>
+    <p class="add-lead">ラットプルダウンとシーテッドローが埋まっていた日に使った2台です。
+    メモにしか残っていないので、種目として足しておくと次回から「前回」の数字が出ます。
+    追加前の状態は「🛟 復元」に残ります。</p>
+    <div class="add-box">${lines}</div>
+    <button class="add-btn" onclick="applyAddEx()">10/9に${need.length}種目を追加する</button>`;
+  panel.classList.add('open');
+}
+
+function applyAddEx() {
+  const records = getRecords();
+  const rec = records.find(r => r.date === ADD_EX_PLAN.date);
+  if (!rec) return;
+  const need = ADD_EX_PLAN.exercises.filter(e => !rec.exercises.some(x => x.name === e.name));
+  if (need.length === 0) return;
+  if (!confirm(`10/9の記録に${need.length}種目を追加します。\n\n${need.map(e => e.name).join('\n')}\n\n実行しますか？`)) return;
+  pushBackup('10/9に代替種目を追加');
+  need.forEach(e => rec.exercises.push({ name: e.name, sets: e.sets.map(s => ({...s})) }));
+  localStorage.setItem('training_records', JSON.stringify(records));
+  try { localStorage.setItem(ADD_EX_KEY, '1'); } catch(e) {}
+  renderHistory();
+  alert(`10/9に${need.length}種目を追加しました\n\n${need.map(e => e.name).join('\n')}`);
+}
+
 function applyShiftFix() {
   const records = getRecords();
   const plan = SHIFT_FIX.filter(([from]) => records.some(r => r.date === from));
@@ -1874,7 +1942,7 @@ function restoreBackup(i) {
   pushBackup('復元の直前');
   localStorage.setItem('training_records', b.data);
   // 修正前の状態に戻した場合は、日付ズレの修正ボタンをもう一度出す
-  try { localStorage.removeItem(SHIFT_DONE_KEY); } catch(e) {}
+  try { localStorage.removeItem(SHIFT_DONE_KEY); localStorage.removeItem(ADD_EX_KEY); } catch(e) {}
   renderHistory();
   renderBackupPanel();
   alert(`${when}時点の状態に戻しました（${b.days}日分）`);
@@ -2243,7 +2311,9 @@ function updatePrevRecord(blockId) {
   const d = last.date.slice(5).replace('-', '/');
   const target = getPromotionTarget(nameEl.value, last.sets);
   const targetHtml = target
-    ? `<div class="prev-target">🎯 次回は <b>${target.target}kg</b> に挑戦！${target.caution ? '（ただし2回続けて揃い、翌日の腰もOKなら）' : ''}</div>`
+    ? (target.assist
+        ? `<div class="prev-target">🎯 次回は補助を <b>${target.target}kg</b> に減らす！（補助が軽いほどキツい）</div>`
+        : `<div class="prev-target">🎯 次回は <b>${target.target}kg</b> に挑戦！${target.caution ? '（ただし2回続けて揃い、翌日の腰もOKなら）' : ''}</div>`)
     : '';
   el.innerHTML = `${targetHtml}<div class="prev-line"><span>前回(${d}): ${setsStr}</span><button class="prev-fill-btn" onclick="fillFromLast(${blockId})">前回と同じ</button></div>`;
 }
@@ -2288,13 +2358,31 @@ const PROMOTION_RULES = {
   'レッグプレス（マシン）': { top: true, reps: 12, inc: 5 },
   'チェストプレス（マシン）': { top: true, reps: 12, inc: 5 },
   'ショルダープレス（マシン）': { top: true, reps: 10, inc: 5 },
-  'シーテッドロー（マシン）': { top: true, reps: 10, inc: 5 }
+  'シーテッドロー（マシン）': { top: true, reps: 10, inc: 5 },
+  // アシストチンディップは「補助の重り」を記録する。軽いほどキツいので、昇格＝重量を減らす
+  'アシストチンディップ': { assist: true, reps: 10, inc: 5 },
+  'ローロー（プレートロード）': { top: true, reps: 10, inc: 2.5 } // 片側の重量を記録する
 };
 
 // 指定セットが昇格基準を満たすか判定し、次回の目標重量を返す（満たさなければnull）
 function getPromotionTarget(name, sets) {
   const rule = PROMOTION_RULES[name];
   if (!rule || !sets || sets.length === 0) return null;
+  // アシスト種目（補助の重りを記録する）は重量の意味が逆。
+  // 一番軽い補助＝一番キツいセットが本番で、昇格は補助を減らす方向。
+  if (rule.assist) {
+    const loaded = sets.filter(s => s.weight > 0);
+    if (loaded.length === 0) return null;
+    const work = Math.min(...loaded.map(s => s.weight));
+    const workSets = loaded.filter(s => s.weight === work);
+    const needR = rule.reps || 10;
+    if (workSets.length >= (rule.minSets || 2) && workSets.every(s => s.reps >= needR)) {
+      return { mode: 'assist', assist: true, current: work, reps: needR, sets: workSets.length,
+               target: Math.max(0, work - rule.inc), caution: !!rule.caution };
+    }
+    return null;
+  }
+
   const maxW = Math.max(...sets.map(s => s.weight));
   if (maxW <= 0) return null; // 自重種目は対象外
   const mainSets = sets.filter(s => s.weight === maxW);
@@ -2324,6 +2412,8 @@ function checkPromotions(exerciseData) {
     if (!p) return;
     let m = (p.mode === 'top')
       ? `🎉 ${ex.name}: トップセット ${p.current}kg×${p.reps}回 達成！次回トップ ${p.target}kg に挑戦`
+      : (p.mode === 'assist')
+      ? `🎉 ${ex.name}: 補助${p.current}kgで${p.reps}回×${p.sets}セット完遂！次回は補助を ${p.target}kg に減らす${p.target === 0 ? '（＝自力の懸垂！）' : ''}`
       : `🎉 ${ex.name}: ${p.current}kg×${p.reps}回×${p.sets}セット完遂！次回 ${p.target}kg に挑戦`;
     if (p.caution) m += '\n（2回続けて揃い、翌日の腰の感覚もOKなら上げる）';
     msgs.push(m);
@@ -2730,6 +2820,7 @@ async function saveRecord() {
 function renderHistory() {
   const records = getRecords();
   renderShiftFix();
+  renderAddEx();
   const container = document.getElementById('history-list');
   if (records.length === 0) {
     container.innerHTML = '<div class="history-empty">まだ記録がありません<br>「記録する」タブからトレーニングを記録しましょう</div>';
