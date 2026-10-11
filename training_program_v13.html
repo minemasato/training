@@ -975,7 +975,17 @@
         </table>
       </div>
       <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
-      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>60kg</b>×6〜8→55kg×8〜10×2。9/23に60kg×7を達成済み。⚠️無人ジムなので<span class="highlight">セーフティは毎回必ず設定</span>（潰れても自力で抜けられる高さに）</p>
+      <p class="rest-note">休憩：トップ後2〜3分／バックオフ間1〜2分　⭐トップ<b>60kg</b>×6〜8→55kg×8〜10×2。9/23に60kg×7を達成済み</p>
+      <button class="form-toggle" onclick="toggleAlt(this)">⚠️ セーフティの高さが合わないとき（必読）</button>
+      <div class="form-body">
+        <div class="form-item"><div class="form-item-label">① 肩甲骨</div><div class="form-item-text"><b>まずこれで解決する可能性が高い。</b>肩甲骨を寄せて下げ、胸を張ると<b>胸の位置が2〜4cm上がります</b>。穴1つ分に相当することが多く、<span class="highlight">低い方の穴でも胸まで下ろしきれる</span>ようになります。背中のアーチは反則ではなく、肩を守る正しいフォームです</div></div>
+        <div class="form-item"><div class="form-item-label">② ベンチ台</div><div class="form-item-text">ジムに<b>別のベンチ台</b>があれば試す。パッドの厚みが2〜3cm違うだけで解決します。⚠️台の下に板やプレートを敷くのは<b>絶対にやらない</b>（転倒します）</div></div>
+        <div class="form-item"><div class="form-item-label">③ 空バーで確認</div><div class="form-item-text">低い方の穴に設定し、<b>20kgの空バーで寝て下ろしてみる</b>。胸に着いてもセーフティにぶつからなければ合格。前の人が動かしているので<b>毎回やる</b>こと</div></div>
+        <div class="form-item"><div class="form-item-label">④ 限界でやらない</div><div class="form-item-text"><b>一人のときは「あと1回いけるか怪しい」で止める。</b>昇格条件はトップ8回で、潰れる必要はまったくありません。<span class="highlight">8回目が怪しいなら、始めない</span></div></div>
+        <div class="form-item"><div class="form-item-label">⑤ 脱出手順</div><div class="form-item-text">万一挙がらなくなったら、騒がず<b>バーを胸→腹→太ももへ転がして起き上がる</b>。先に知っておくだけで慌てずに済みます。<b>絶対に頭の方へ動かさない</b>（首に落ちるのが最悪）</div></div>
+        <div class="form-item"><div class="form-item-label">⑥ 最終手段</div><div class="form-item-text">①〜③でどうしても合わないなら、<b>重いセットはスミスマシンかダンベルに移す</b>。スミスは好きな高さでフックに掛けられ、ダンベルは最悪投げ出せるので一人でも安全。<span class="highlight">重量が変わるので別種目として記録</span>（ダンベルプレスなら片手22.5〜25kg）</div></div>
+        <p class="form-foot">⚠️<b>「逃げられない高さ」で妥協するのだけはやめてください。</b>60kgが胸に乗って抜けられなくなると、一人では本当に危険です。<b>可動域が少し狭いことより、挙がらなくなったときに逃げられることが優先</b>。それでも①を試せば、たいていは両立できます。</p>
+      </div>
       <button class="alt-toggle" onclick="toggleAlt(this)">⇄ 代替：ベンチ台・スミスマシンが使用中の場合</button>
       <div class="alt-body">
         <p class="alt-name">チェストプレス（マシン）</p>
@@ -1099,7 +1109,49 @@
       </div>
     </div>
 
-    <p class="section-title">腹筋</p>
+    <p class="section-title">腹筋・体幹</p>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">ドローイン</span><span class="badge badge-leg">腹横筋（深層）</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>強度</th><th>時間</th><th></th></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>1</td><td>自重</td><td>20秒</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>20秒</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>20秒</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">お腹を<b>凹ませたまま呼吸し続ける</b>練習。腹横筋（お腹を横から締める天然のコルセット）のスイッチを入れ直すのが目的で、デッドバグの前に必ずやる。<br>
+      <b>①</b>仰向けで膝を立てる（座ったまま・立ったままでも可）→<b>②</b>鼻から吸う→<b>③</b>口から細く長く吐きながら<span class="highlight">おへそを背骨の方へ引き込む</span>→<b>④</b>吐ききったら凹ませた形のまま<b>浅い呼吸を続けて20秒</b>→<b>⑤</b>脱力。これを3回。<br>
+      ⚠️<b>息を止めないこと</b>（9割の人がここを間違えます）。止めて我慢するのは別物で、腹横筋は働いていません。<br>
+      ⚠️<b>胸で吸い上げない・腹筋を固めない</b>。肋骨は動かさず、お腹だけを「薄く長く」引き込む。<br>
+      ✅効いているかの確認：腰骨の出っぱりから<b>内側に指2本</b>のあたりに手を当て、じわっと硬くなればOK。表面がボコッと盛り上がるなら力み方が違う。<br>
+      🚫<b>バーベルを担いでいるときはやらない</b>。スクワットとデッドリフトは逆の「ブレーシング（息を吸って腹を膨らませて固める）」のまま。凹ませると支えが抜けて腰に来ます。<br>
+      📅1日に何回やってもOK。朝起きてすぐ／寝る前が続けやすく、1分で終わります。信号待ちやデスクワーク中にも座ったままできます。<br>
+      📝記録するときは<b>重量を空欄、回数の欄に「秒数」</b>を入れる（例：20）<br>
+      🎥動画で確認：<a href="https://www.youtube.com/watch?v=MqgLbSjew-Y" target="_blank" rel="noopener" style="color:#4b7bec;font-weight:600;">ティップネス公式「寝て／座り／立ちのドローイン」（6分）</a>　※0:53から仰向け、2:42から座位、4:12から立位。<span class="highlight">動画は「これで痩せる」と言いますが、そこは信じなくて大丈夫</span>。脂肪を落とすのは食事と大筋群の仕事で、この種目は姿勢を直すためのものです</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <div class="card-header"><span class="card-name">デッドバグ</span><span class="badge badge-leg">腹横筋（深層）</span></div>
+        <table class="set-table">
+          <tr><th>セット</th><th>強度</th><th>回数</th><th></th></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>1</td><td>自重</td><td>左右交互 10往復</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>2</td><td>自重</td><td>左右交互 10往復</td><td><span class="tag tag-main">メイン</span></td></tr>
+          <tr class="row-main" onclick="toggleSet(this)"><td>3</td><td>自重</td><td>左右交互 10往復</td><td><span class="tag tag-main">メイン</span></td></tr>
+        </table>
+      </div>
+      <div class="card-check-row" onclick="toggleExercise(this)"><div class="exercise-check"></div><span class="check-label">完了</span></div>
+      <p class="rest-note">休憩：30秒〜1分　🆕<b>脂肪を減らすためではなく、骨盤の傾きを直すための種目</b>です。スクワットの前傾とブルガリアンでの腰の張りは、どちらも深層の腹横筋が抜けて骨盤が前に倒れているサイン。ここが効くと下腹が物理的に引っ込みます。<br>
+      👆<b>まず上のドローインで腹横筋のスイッチを入れてから</b>始めること。<br>
+      <b>やり方</b>：仰向けで両手を天井、膝は90度。<span class="highlight">腰と床のすき間をゼロに保ったまま</span>、対角の手足をゆっくり床すれすれまで伸ばして戻す。<br>
+      ⚠️<b>腰が床から浮いたらそこが限界</b>。回数を増やすより、浮かせないまま可動域を広げる。きつければ足だけ／手だけでOK。<br>
+      📅<b>毎日やっていい種目</b>です（道具不要・疲労が残らない）。水曜は記録用の枠として置いてありますが、朝や寝る前に3分でも効果があります。旅行中のホテルでも続けられます<br>
+      🎥まず見る：<a href="https://www.youtube.com/watch?v=Wb7_mqepkfw" target="_blank" rel="noopener" style="color:#4b7bec;font-weight:600;">MELOS「腰にやさしい体幹トレーニング・デッドバグの正しいやり方」（2分38秒）</a>　短くて要点だけ。<br>
+      🎥うまくいかないとき：<a href="https://www.youtube.com/watch?v=sZkatbkybWw" target="_blank" rel="noopener" style="color:#4b7bec;font-weight:600;">のがちゃんねる「反り腰・姿勢改善にデッドバグはコツを掴むと10倍変わる」（10分）</a>　<span class="highlight">腰が浮いてしまう人向けのコツ</span>を深掘り。あなたの課題（骨盤前傾）にそのまま当てはまります</p>
+    </div>
 
     <div class="card">
       <div class="card-top">
@@ -1696,7 +1748,7 @@
 // ===== データ =====
 // 表示用バージョン。iPhoneが古い版をキャッシュしていないか確認するための目印。
 // 「記録する」ページ最下部に表示される。更新のたびに日付を上げること。
-const APP_VERSION = '2026-10-09c';
+const APP_VERSION = '2026-10-11e';
 
 // パターン別デフォルト種目
 const EXERCISES = {
@@ -1707,7 +1759,7 @@ const EXERCISES = {
   // 週5プラン（1回25〜35分・昼休みに収める用）
   月: ['バーベルスクワット（パワーラック）','レッグプレス（マシン）','サイドレイズ','ウォーキング（分）'],
   火: ['ベンチプレス','ダンベルローイング','ウォーキング（分）'],
-  水: ['ショルダープレス（マシン）','サイドレイズ','デクラインクランチ','ウォーキング（分）'],
+  水: ['ショルダープレス（マシン）','サイドレイズ','ドローイン','デッドバグ','デクラインクランチ','ウォーキング（分）'],
   木: ['デッドリフト（バーベル）','ブルガリアンスクワット','ウォーキング（分）'],
   金: ['チェストプレス（マシン）','アシストチンディップ','ローロー（プレートロード）','ウォーキング（分）']
 };
@@ -1747,6 +1799,8 @@ const ALL_EXERCISES = [
   'グルートブリッジ',
   'パイクプッシュアップ',
   'アブローラー（膝コロ）',
+  'ドローイン',
+  'デッドバグ',
   'アシストチンディップ',
   'ローロー（プレートロード）',
   'その他',
